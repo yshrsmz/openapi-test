@@ -5,27 +5,32 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a02cdbe5-ba4a-42c4-a503-e2bf275a7bcc" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/kotlinc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/CLAUDE.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/buildSrc/build.gradle.kts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/buildSrc/settings.gradle.kts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/buildSrc/src/main/kotlin/kotlin-jvm.gradle.kts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/design-documents/openapi-kotlin-plugin-design.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gradle.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gradle/libs.versions.toml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gradlew" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gradlew.bat" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/openapi/ory-client-1.20.22.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/openapikotlin-gradle-plugin/build.gradle.kts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/settings.gradle.kts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.devcontainer/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.devcontainer/devcontainer.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/openapikotlin-runtime/build.gradle.kts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/openapikotlin-runtime/src/main/kotlin/com/codingfeline/openapikotlin/runtime/auth/AuthInterceptor.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/openapikotlin-runtime/src/main/kotlin/com/codingfeline/openapikotlin/runtime/auth/OAuth2Client.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/openapikotlin-runtime/src/main/kotlin/com/codingfeline/openapikotlin/runtime/auth/TokenManager.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/openapikotlin-runtime/src/main/kotlin/com/codingfeline/openapikotlin/runtime/http/ApiClient.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/openapikotlin-runtime/src/main/kotlin/com/codingfeline/openapikotlin/runtime/http/ApiException.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/openapikotlin-runtime/src/main/kotlin/com/codingfeline/openapikotlin/runtime/http/ResponseValidator.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/openapikotlin-runtime/src/main/kotlin/com/codingfeline/openapikotlin/runtime/serialization/DateTimeSerializers.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/openapikotlin-runtime/src/main/kotlin/com/codingfeline/openapikotlin/runtime/serialization/EnumSerializer.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/openapikotlin-runtime/src/main/kotlin/com/codingfeline/openapikotlin/runtime/validation/ConstraintValidator.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/openapikotlin-runtime/src/main/kotlin/com/codingfeline/openapikotlin/runtime/validation/ValidationException.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/openapikotlin-runtime/src/test/kotlin/com/codingfeline/openapikotlin/runtime/auth/AuthInterceptorTest.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/openapikotlin-runtime/src/test/kotlin/com/codingfeline/openapikotlin/runtime/auth/OAuth2ClientTest.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/openapikotlin-runtime/src/test/kotlin/com/codingfeline/openapikotlin/runtime/auth/TokenManagerTest.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/openapikotlin-runtime/src/test/kotlin/com/codingfeline/openapikotlin/runtime/http/ApiClientTest.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/openapikotlin-runtime/src/test/kotlin/com/codingfeline/openapikotlin/runtime/http/ApiExceptionTest.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/openapikotlin-runtime/src/test/kotlin/com/codingfeline/openapikotlin/runtime/http/ResponseValidatorTest.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/openapikotlin-runtime/src/test/kotlin/com/codingfeline/openapikotlin/runtime/serialization/DateTimeSerializersTest.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/openapikotlin-runtime/src/test/kotlin/com/codingfeline/openapikotlin/runtime/serialization/EnumSerializerTest.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/openapikotlin-runtime/src/test/kotlin/com/codingfeline/openapikotlin/runtime/validation/ConstraintValidatorTest.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/openapikotlin-runtime/src/test/kotlin/com/codingfeline/openapikotlin/runtime/validation/ValidationExceptionTest.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/settings.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/settings.gradle.kts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -40,28 +45,64 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 8
-}]]></component>
+  <component name="KubernetesApiPersistence">{}</component>
+  <component name="KubernetesApiProvider">{
+  &quot;isMigrated&quot;: true
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 8
+}</component>
   <component name="ProjectId" id="2zwuQ6KFiX9JsXrOn2aGu7K1zsI" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "main",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
+  <component name="RdControllerToolWindowsLayoutState" isNewUi="true">
+    <layout>
+      <window_info id="Bookmarks" side_tool="true" />
+      <window_info id="Merge Requests" />
+      <window_info id="Backup and Sync History" />
+      <window_info id="Commit_Guest" show_stripe_button="false" />
+      <window_info id="Pull Requests" />
+      <window_info id="Learn" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.1534242" />
+      <window_info id="Commit" order="1" weight="0.25" />
+      <window_info id="Structure" order="2" side_tool="true" weight="0.25" />
+      <window_info anchor="bottom" id="Database Changes" />
+      <window_info anchor="bottom" id="TypeScript" />
+      <window_info anchor="bottom" id="Profiler" />
+      <window_info anchor="bottom" id="Build" />
+      <window_info anchor="bottom" id="TODO" />
+      <window_info anchor="bottom" id="File Transfer" />
+      <window_info anchor="bottom" id="Version Control" order="0" />
+      <window_info anchor="bottom" id="Problems" order="1" />
+      <window_info anchor="bottom" id="Problems View" order="2" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="3" visible="true" weight="0.33023393" />
+      <window_info anchor="bottom" id="Services" order="4" />
+      <window_info anchor="right" id="Endpoints" />
+      <window_info anchor="right" id="Coverage" side_tool="true" />
+      <window_info anchor="right" content_ui="combo" id="Notifications" order="0" weight="0.25" />
+      <window_info anchor="right" id="AIAssistant" order="1" weight="0.25" />
+      <window_info anchor="right" id="Database" order="2" weight="0.25" />
+      <window_info anchor="right" id="Gradle" order="3" weight="0.25" />
+      <window_info anchor="right" id="Maven" order="4" weight="0.25" />
+    </layout>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -77,11 +118,16 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1752654439451</updated>
-      <workItem from="1752654440536" duration="4095000" />
+      <workItem from="1752654440536" duration="7883000" />
+      <workItem from="1752671072426" duration="2901000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
   </component>
 </project>

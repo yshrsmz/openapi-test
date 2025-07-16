@@ -1,0 +1,76 @@
+{
+  "name": "OpenAPI Kotlin Development",
+  // Use a base Ubuntu image instead of custom Dockerfile
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+  
+  // Configure tool-specific properties
+  "customizations": {
+    // IntelliJ IDEA specific settings
+    "jetbrains": {
+      "backend": "IntelliJClient"
+    }
+  },
+
+  // Features to add to the dev container
+  "features": {
+    // Java feature with JDK 17
+    "ghcr.io/devcontainers/features/java:1": {
+      "version": "17",
+      "jdkDistro": "tem",
+      "gradleVersion": "latest",
+      "installMaven": false,
+      "installAnt": false
+    },
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "installZsh": true,
+      "configureZshAsDefaultShell": false,
+      "installOhMyZsh": true,
+      "username": "automatic"
+    },
+    // Docker-in-Docker for potential containerized testing
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {
+      "moby": true,
+      "installDockerBuildx": true,
+      "version": "latest"
+    },
+    // GitHub CLI for GitHub integration
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    // Claude Code CLI
+    "ghcr.io/anthropics/devcontainer-features/claude-code:1": {}
+  },
+
+  // Use 'forwardPorts' to make a list of ports inside the container available locally
+  // "forwardPorts": [],
+
+  // Use 'postCreateCommand' to run commands after the container is created
+  // "postCreateCommand": "",
+
+  // Configure mounts
+  "mounts": [
+    // Gradle cache persisted locally
+    "source=${localWorkspaceFolder}/.gradle,target=${containerWorkspaceFolder}/.gradle,type=bind,consistency=cached",
+    // Claude Code configuration and authentication
+    "source=${localEnv:HOME}/.claude,target=/home/vscode/.claude,type=bind,consistency=cached"
+  ],
+
+  // Uncomment to connect as root instead
+  // "remoteUser": "root",
+  // Use default vscode user
+  "remoteUser": "vscode",
+
+  // Environment variables
+  "containerEnv": {
+    "GRADLE_USER_HOME": "${containerWorkspaceFolder}/.gradle",
+    "JAVA_HOME": "/opt/java/openjdk"
+  },
+
+  // Enable Claude Code access from within the container
+  "runArgs": [
+    "--network=host",
+    "--add-host=host.docker.internal:host-gateway"
+  ],
+
+  // Set workspace folder
+  "workspaceFolder": "/workspaces/openapi-test",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspaces/openapi-test,type=bind,consistency=cached"
+}
