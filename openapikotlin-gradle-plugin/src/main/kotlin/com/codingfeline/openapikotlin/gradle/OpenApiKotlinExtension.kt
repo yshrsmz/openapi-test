@@ -80,7 +80,8 @@ data class ClientConfig(
     var clientClassName: String = "ApiClient",
     var generateErrorHandling: Boolean = true,
     var generateAuthHelpers: Boolean = true,
-    var useCoroutines: Boolean = true
+    var useCoroutines: Boolean = true,
+    var generateSeparateClients: Boolean = false
 ) : java.io.Serializable
 
 /**

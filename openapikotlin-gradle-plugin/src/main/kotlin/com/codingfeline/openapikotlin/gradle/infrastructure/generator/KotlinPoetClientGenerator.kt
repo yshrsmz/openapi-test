@@ -338,11 +338,23 @@ class KotlinPoetClientGenerator(
     
     private fun generateAuthHelper(spec: OpenApiSpec, packageName: String): GeneratedFile {
         val helperClass = TypeSpec.classBuilder("AuthHelper")
+            .primaryConstructor(
+                FunSpec.constructorBuilder()
+                    .addParameter("httpClient", KTOR_CLIENT)
+                    .build()
+            )
+            .addProperty(
+                PropertySpec.builder("httpClient", KTOR_CLIENT)
+                    .initializer("httpClient")
+                    .addModifiers(KModifier.PRIVATE)
+                    .build()
+            )
             .addFunction(
                 FunSpec.builder("configureAuth")
-                    .addParameter("httpClient", KTOR_CLIENT)
                     .addParameter("config", ClassName(packageName, "OAuth2Config"))
-                    .addCode("// Configure OAuth2 authentication")
+                    .addCode("// Configure OAuth2 authentication\n")
+                    .addStatement("val oauth2Client = OAuth2Client(config, httpClient)")
+                    .addCode("// Additional auth configuration")
                     .build()
             )
             .build()
@@ -409,7 +421,7 @@ class KotlinPoetClientGenerator(
             .filter { it.isNotEmpty() }
             .mapIndexed { index, part ->
                 if (index == 0) part.lowercase()
-                else part.replaceFirstChar { it.uppercase() }
+                else part.lowercase().replaceFirstChar { it.uppercase() }
             }
             .joinToString("")
     }

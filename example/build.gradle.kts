@@ -24,7 +24,7 @@ dependencies {
     // For testing generated code
     testImplementation("io.ktor:ktor-client-mock:3.2.2")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0")
-    testImplementation("com.google.truth:truth:1.5.0")
+    testImplementation("com.google.truth:truth:1.4.4")
 }
 
 // OpenAPI plugin configuration

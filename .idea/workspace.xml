@@ -5,8 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a02cdbe5-ba4a-42c4-a503-e2bf275a7bcc" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/openapikotlin-gradle-plugin/src/main/kotlin/com/codingfeline/openapikotlin/gradle/infrastructure/generator/SpecialTypesGenerator.kt" beforeDir="false" afterPath="$PROJECT_DIR$/openapikotlin-gradle-plugin/src/main/kotlin/com/codingfeline/openapikotlin/gradle/infrastructure/generator/SpecialTypesGenerator.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/example/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/openapikotlin-gradle-plugin/src/main/kotlin/com/codingfeline/openapikotlin/gradle/infrastructure/generator/KotlinPoetClientGenerator.kt" beforeDir="false" afterPath="$PROJECT_DIR$/openapikotlin-gradle-plugin/src/main/kotlin/com/codingfeline/openapikotlin/gradle/infrastructure/generator/KotlinPoetClientGenerator.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -17,6 +18,51 @@
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
     </projectState>
+  </component>
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <task path="$PROJECT_DIR$/openapikotlin-gradle-plugin">
+          <activation />
+        </task>
+        <projects_view>
+          <tree_state>
+            <expand>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="openapi-test" type="f1a62948:ProjectNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="openapi-test" type="f1a62948:ProjectNode" />
+                <item name="openapikotlin-gradle-plugin" type="2d1252cf:ModuleNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="openapi-test" type="f1a62948:ProjectNode" />
+                <item name="openapikotlin-gradle-plugin" type="2d1252cf:ModuleNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="openapi-test" type="f1a62948:ProjectNode" />
+                <item name="openapikotlin-gradle-plugin" type="2d1252cf:ModuleNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="build" type="c8890929:TasksNode$1" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="openapi-test" type="f1a62948:ProjectNode" />
+                <item name="openapikotlin-gradle-plugin" type="2d1252cf:ModuleNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="publishing" type="c8890929:TasksNode$1" />
+              </path>
+            </expand>
+            <select />
+          </tree_state>
+        </projects_view>
+      </state>
+    </system>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -79,7 +125,7 @@
       <window_info anchor="right" content_ui="combo" id="Notifications" order="0" weight="0.25" />
       <window_info anchor="right" id="AIAssistant" order="1" weight="0.25" />
       <window_info anchor="right" id="Database" order="2" weight="0.25" />
-      <window_info anchor="right" id="Gradle" order="3" weight="0.25" />
+      <window_info active="true" anchor="right" id="Gradle" order="3" visible="true" weight="0.32995343" />
       <window_info anchor="right" id="Maven" order="4" weight="0.25" />
     </layout>
   </component>
