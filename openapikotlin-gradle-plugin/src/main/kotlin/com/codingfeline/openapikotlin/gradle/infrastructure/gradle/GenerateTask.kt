@@ -56,12 +56,16 @@ abstract class GenerateTask : DefaultTask() {
         val clientGenerator = KotlinPoetClientGenerator(typeMapper, clientConfig.get())
         val fileWriter = FileWriter()
         
+        // Create validation service (optional)
+        val validationService = null // TODO: Implement validation service
+        
         // Create use case
         val useCase = GenerateCodeUseCase(
             parser = parser,
             modelGenerator = modelGenerator,
             clientGenerator = clientGenerator,
-            fileWriter = fileWriter
+            fileWriter = fileWriter,
+            validationService = validationService
         )
         
         // Execute generation
