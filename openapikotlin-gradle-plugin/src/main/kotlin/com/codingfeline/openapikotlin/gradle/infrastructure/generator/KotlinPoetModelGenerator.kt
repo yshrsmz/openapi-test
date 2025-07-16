@@ -124,13 +124,8 @@ class KotlinPoetModelGenerator(
                     if (propSchema.description != null) {
                         addKdoc(propSchema.description)
                     }
-                    if (propName != propertyName) {
-                        addAnnotation(
-                            AnnotationSpec.builder(SerialName::class)
-                                .addMember("%S", propName)
-                                .build()
-                        )
-                    }
+                    // SerialName annotation is already added to the constructor parameter
+                    // No need to add it again to the property
                 }
                 .build()
             
