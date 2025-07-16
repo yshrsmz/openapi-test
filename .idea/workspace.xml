@@ -4,7 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a02cdbe5-ba4a-42c4-a503-e2bf275a7bcc" name="Changes" comment="" />
+    <list default="true" id="a02cdbe5-ba4a-42c4-a503-e2bf275a7bcc" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/openapikotlin-gradle-plugin/src/main/kotlin/com/codingfeline/openapikotlin/gradle/infrastructure/generator/SpecialTypesGenerator.kt" beforeDir="false" afterPath="$PROJECT_DIR$/openapikotlin-gradle-plugin/src/main/kotlin/com/codingfeline/openapikotlin/gradle/infrastructure/generator/SpecialTypesGenerator.kt" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />

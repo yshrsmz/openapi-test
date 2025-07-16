@@ -2,16 +2,14 @@ package com.codingfeline.openapikotlin.gradle.infrastructure.generator
 
 import com.codingfeline.openapikotlin.gradle.domain.model.OpenApiSpec
 import com.codingfeline.openapikotlin.gradle.domain.service.CodeGenerationService
+import com.codingfeline.openapikotlin.gradle.domain.service.GeneratedFile
 import com.squareup.kotlinpoet.*
-import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
-import kotlinx.datetime.Instant
-import kotlinx.datetime.LocalDate
 
 /**
  * Generates special type definitions that are referenced but not defined in some OpenAPI specs.
  * This is common with Go-generated specs that use custom types.
  */
-class SpecialTypesGenerator : CodeGenerationService.ModelGenerator {
+class SpecialTypesGenerator {
     
     // Known special types that appear in Ory and similar Go-generated specs
     private val specialTypes = mapOf(
@@ -55,10 +53,10 @@ class SpecialTypesGenerator : CodeGenerationService.ModelGenerator {
         private val ANY = ClassName("kotlin", "Any")
     }
     
-    override fun generateModels(
+    fun generateModels(
         spec: OpenApiSpec,
         packageName: String
-    ): List<CodeGenerationService.GeneratedFile> {
+    ): List<GeneratedFile> {
         // Check if any special types are referenced in the spec
         val referencedTypes = mutableSetOf<String>()
         
@@ -105,7 +103,7 @@ class SpecialTypesGenerator : CodeGenerationService.ModelGenerator {
         }
         
         val fileSpec = FileSpec.builder(packageName, "SpecialTypes")
-            .addComment("Special type definitions for types referenced but not defined in the OpenAPI spec")
+            .addFileComment("Special type definitions for types referenced but not defined in the OpenAPI spec")
             .apply {
                 referencedTypes.forEach { typeName ->
                     specialTypes[typeName]?.let { kotlinType ->
@@ -120,7 +118,7 @@ class SpecialTypesGenerator : CodeGenerationService.ModelGenerator {
             
         val relativePath = packageName.replace(".", "/") + "/SpecialTypes.kt"
         return listOf(
-            CodeGenerationService.GeneratedFile(relativePath, fileSpec.toString())
+            GeneratedFile(relativePath, fileSpec.toString())
         )
     }
     
