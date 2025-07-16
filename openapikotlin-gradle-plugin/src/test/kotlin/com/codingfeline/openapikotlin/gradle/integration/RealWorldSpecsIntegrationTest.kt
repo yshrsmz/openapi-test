@@ -512,12 +512,13 @@ class RealWorldSpecsIntegrationTest {
             "com.example.complex.models"
         )
         
-        // Verify all models were generated (OrderStatus enum is skipped as it's a primitive enum)
+        // Verify all models were generated
         println("Generated models: ${modelFiles.map { it.relativePath }}")
-        assertEquals(4, modelFiles.size, "Should generate 4 models (OrderStatus enum is skipped)")
+        assertEquals(5, modelFiles.size, "Should generate 5 models")
         
-        // OrderStatus enum is not generated because it's a primitive enum (string with enum values)
-        // The type mapper will handle it as a String type with validation
+        val orderStatusEnum = modelFiles.find { it.relativePath.endsWith("OrderStatus.kt") }
+        assertTrue(orderStatusEnum != null, "Should generate OrderStatus enum")
+        assertTrue(orderStatusEnum.content.contains("enum class OrderStatus"), "OrderStatus should be an enum")
         
         val moneyModel = modelFiles.find { it.relativePath.endsWith("Money.kt") }
         assertTrue(moneyModel != null, "Should generate Money model")

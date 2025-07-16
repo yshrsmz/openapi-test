@@ -22,8 +22,8 @@ class KotlinPoetModelGenerator(
     
     override fun generateModels(schemas: Map<String, Schema>, packageName: String): List<GeneratedFile> {
         return schemas.mapNotNull { (name, schema) ->
-            // Skip generating for primitive schemas or references
-            if (schema.isReference() || schema.isPrimitive()) {
+            // Skip generating for references or primitives without enums
+            if (schema.isReference() || (schema.isPrimitive() && schema.enum == null)) {
                 null
             } else {
                 generateModel(name, schema, packageName)
