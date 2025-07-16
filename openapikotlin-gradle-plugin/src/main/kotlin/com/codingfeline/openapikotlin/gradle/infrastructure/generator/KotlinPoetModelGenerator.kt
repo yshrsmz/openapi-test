@@ -20,7 +20,12 @@ class KotlinPoetModelGenerator(
     private val config: ModelsConfig
 ) : CodeGenerationService {
     
+    private var allSchemas: Map<String, Schema> = emptyMap()
+    
     override fun generateModels(schemas: Map<String, Schema>, packageName: String): List<GeneratedFile> {
+        // Store all schemas for reference resolution
+        allSchemas = schemas
+        
         return schemas.mapNotNull { (name, schema) ->
             // Skip generating for references or primitives without enums
             if (schema.isReference() || (schema.isPrimitive() && schema.enum == null)) {
@@ -34,10 +39,14 @@ class KotlinPoetModelGenerator(
     private fun generateModel(name: String, schema: Schema, packageName: String): GeneratedFile {
         val className = ClassName(packageName, name)
         
+        // Handle schema composition
+        val resolvedSchema = resolveSchemaComposition(schema, packageName)
+        
         val typeSpec = when {
-            schema.enum != null -> generateEnumClass(name, schema)
-            schema.properties != null -> generateDataClass(name, schema, packageName)
-            else -> generateTypeAlias(name, schema)
+            resolvedSchema.enum != null -> generateEnumClass(name, resolvedSchema)
+            resolvedSchema.properties != null -> generateDataClass(name, resolvedSchema, packageName)
+            resolvedSchema.oneOf != null -> generateSealedInterface(name, resolvedSchema, packageName)
+            else -> generateTypeAlias(name, resolvedSchema)
         }
         
         val fileSpec = FileSpec.builder(packageName, name)
@@ -52,6 +61,68 @@ class KotlinPoetModelGenerator(
         
         val relativePath = PackageName(packageName).toPath() + "/$name.kt"
         return GeneratedFile(relativePath, fileSpec.toString())
+    }
+    
+    private fun resolveSchemaComposition(schema: Schema, packageName: String): Schema {
+        return when {
+            schema.allOf != null -> mergeAllOfSchemas(schema, packageName)
+            else -> schema
+        }
+    }
+    
+    private fun mergeAllOfSchemas(schema: Schema, packageName: String): Schema {
+        // Collect all properties from all schemas
+        val mergedProperties = mutableMapOf<String, Schema>()
+        val mergedRequired = mutableSetOf<String>()
+        
+        schema.allOf?.forEach { subSchema ->
+            val resolved = resolveSchemaReference(subSchema)
+            
+            resolved.properties?.forEach { (propName, propSchema) ->
+                mergedProperties[propName] = propSchema
+            }
+            
+            resolved.required?.forEach { requiredProp ->
+                mergedRequired.add(requiredProp)
+            }
+        }
+        
+        // If the main schema has its own properties, add them too
+        schema.properties?.forEach { (propName, propSchema) ->
+            mergedProperties[propName] = propSchema
+        }
+        
+        schema.required?.forEach { requiredProp ->
+            mergedRequired.add(requiredProp)
+        }
+        
+        return schema.copy(
+            properties = mergedProperties,
+            required = mergedRequired.toList(),
+            allOf = null // Clear allOf since we've merged everything
+        )
+    }
+    
+    private fun resolveSchemaReference(schema: Schema): Schema {
+        return if (schema.isReference()) {
+            val refName = schema.getReferenceName()
+            allSchemas[refName] ?: schema
+        } else {
+            schema
+        }
+    }
+    
+    private fun generateSealedInterface(name: String, schema: Schema, packageName: String): TypeSpec {
+        // TODO: Implement oneOf as sealed interface
+        return TypeSpec.interfaceBuilder(name)
+            .addModifiers(KModifier.SEALED)
+            .addAnnotation(Serializable::class)
+            .apply {
+                if (schema.description != null) {
+                    addKdoc(schema.description)
+                }
+            }
+            .build()
     }
     
     private fun generateEnumClass(name: String, schema: Schema): TypeSpec {
@@ -184,6 +255,11 @@ class KotlinPoetModelGenerator(
         // Handle empty or invalid property names
         if (this.isBlank()) return "property"
         
+        // If it's already camelCase and doesn't contain special characters, return as-is but ensure first char is lowercase
+        if (this.matches(Regex("^[a-zA-Z][a-zA-Z0-9]*$"))) {
+            return this.replaceFirstChar { it.lowercase() }
+        }
+        
         // Handle special characters by replacing them with underscores
         val sanitized = this.replace(".", "_")
             .replace(" ", "_")
@@ -223,7 +299,7 @@ class KotlinPoetModelGenerator(
             .filter { it.isNotEmpty() }
             .mapIndexed { index, part ->
                 if (index == 0) part.lowercase()
-                else part.replaceFirstChar { it.uppercase() }
+                else part.lowercase().replaceFirstChar { it.uppercase() }
             }
             .joinToString("")
         

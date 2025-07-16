@@ -202,7 +202,11 @@ class SwaggerParserAdapter : OpenApiParser {
                     propertyName = it.propertyName,
                     mapping = it.mapping
                 )
-            }
+            },
+            allOf = schema.allOf?.map { mapSchema(it) },
+            oneOf = schema.oneOf?.map { mapSchema(it) },
+            anyOf = schema.anyOf?.map { mapSchema(it) },
+            not = schema.not?.let { mapSchema(it) }
         )
     }
     
