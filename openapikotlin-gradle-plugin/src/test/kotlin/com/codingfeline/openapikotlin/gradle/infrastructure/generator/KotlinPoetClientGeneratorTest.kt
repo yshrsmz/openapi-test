@@ -139,7 +139,7 @@ class KotlinPoetClientGeneratorTest {
         
         assertContains(result.content, "suspend fun createUser(")
         assertContains(result.content, "request: CreateUserRequest")
-        assertContains(result.content, "method = HttpMethod.POST")
+        assertContains(result.content, "method = HttpMethod.Post")
         assertContains(result.content, "setBody(request)")
         assertContains(result.content, "body<User>()")
         

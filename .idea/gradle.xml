@@ -24,6 +24,7 @@
             <option value="$PROJECT_DIR$/example" />
             <option value="$PROJECT_DIR$/openapikotlin-gradle-plugin" />
             <option value="$PROJECT_DIR$/openapikotlin-runtime" />
+            <option value="$PROJECT_DIR$/test-simple" />
           </set>
         </option>
       </GradleProjectSettings>

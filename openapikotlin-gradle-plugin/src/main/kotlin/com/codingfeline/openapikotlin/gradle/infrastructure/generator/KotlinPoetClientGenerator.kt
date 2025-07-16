@@ -201,9 +201,10 @@ class KotlinPoetClientGenerator(
         codeBuilder.addStatement("url(\"\$baseUrl%L\")", pathWithParams)
         
         // Set method
+        val httpMethodName = operationContext.method.name.lowercase().replaceFirstChar { it.uppercase() }
         codeBuilder.addStatement("method = %T.%L", 
             ClassName("io.ktor.http", "HttpMethod"), 
-            operationContext.method.name
+            httpMethodName
         )
         
         // Add headers

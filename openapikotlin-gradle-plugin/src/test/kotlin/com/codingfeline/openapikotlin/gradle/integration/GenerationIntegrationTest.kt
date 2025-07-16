@@ -101,7 +101,7 @@ class GenerationIntegrationTest {
         assertContains(clientContent, "suspend fun sayHello()")
         assertContains(clientContent, "httpClient.request")
         assertContains(clientContent, "/hello")
-        assertContains(clientContent, "HttpMethod.GET")
+        assertContains(clientContent, "HttpMethod.Get")
     }
     
     @Test
