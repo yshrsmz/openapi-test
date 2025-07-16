@@ -60,7 +60,7 @@ class GenerateCodeUseCase(
         val modelFiles = modelGenerator.generateModels(schemas, modelsPackage.value)
         
         // 5. Generate client code
-        val operations = spec.getAllOperations()
+        val operations = spec.getAllOperationsWithContext()
         val clientFile = clientGenerator.generateClient(spec, operations, clientPackage.value)
         
         // 6. Generate auth helpers if needed

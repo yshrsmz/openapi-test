@@ -1,6 +1,7 @@
 package com.codingfeline.openapikotlin.gradle
 
 import com.codingfeline.openapikotlin.gradle.infrastructure.gradle.GenerateTask
+import com.codingfeline.openapikotlin.gradle.infrastructure.gradle.OpenApiExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
@@ -11,34 +12,32 @@ class OpenApiKotlinPlugin : Plugin<Project> {
     
     override fun apply(project: Project) {
         // Create extension
-        val extension = project.createOpenApiExtension()
+        val extension = project.extensions.create("openApiKotlin", OpenApiExtension::class.java, project)
         
         // Register the code generation task
-        project.tasks.register("generateOpenApiCode", GenerateTask::class.java) {
-            group = "openapi"
-            description = "Generates Kotlin code from OpenAPI specification"
+        project.tasks.register("generateOpenApiCode", GenerateTask::class.java) { task ->
+            task.group = "openapi"
+            task.description = "Generates Kotlin code from OpenAPI specification"
             
             // Configure task inputs/outputs
-            inputSpec.set(extension.inputSpec)
-            outputDir.set(extension.outputDir)
-            packageName.set(extension.packageName)
-            modelsConfig.set(extension.models)
-            clientConfig.set(extension.client)
-            validationConfig.set(extension.validation)
+            task.inputSpec.set(extension.inputSpec)
+            task.outputDir.set(extension.outputDir)
+            task.packageName.set(extension.packageName)
+            task.modelsConfig.set(extension.models)
+            task.clientConfig.set(extension.client)
+            task.validationConfig.set(extension.validation)
             
             // Ensure output directory is cleared before generation
-            doFirst {
-                outputDir.get().deleteRecursively()
-                outputDir.get().mkdirs()
+            task.doFirst {
+                task.outputDir.get().deleteRecursively()
+                task.outputDir.get().mkdirs()
             }
         }
         
         // Configure Kotlin source sets to include generated code
         project.afterEvaluate {
-            project.extensions.findByType(org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension::class.java)?.apply {
-                sourceSets.getByName("main") {
-                    kotlin.srcDir(extension.outputDir.get())
-                }
+            project.extensions.findByType(org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension::class.java)?.let { kotlinExt ->
+                kotlinExt.sourceSets.getByName("main").kotlin.srcDir(extension.outputDir.get())
             }
         }
     }

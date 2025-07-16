@@ -30,6 +30,7 @@ dependencies {
     testImplementation("io.mockk:mockk:1.13.14")
     testImplementation("com.google.truth:truth:1.4.4")
     testImplementation(gradleTestKit())
+    testImplementation(kotlin("test"))
 }
 
 gradlePlugin {

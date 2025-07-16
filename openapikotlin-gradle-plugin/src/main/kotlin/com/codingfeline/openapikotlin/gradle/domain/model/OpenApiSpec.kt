@@ -37,6 +37,23 @@ data class OpenApiSpec(
     }
     
     /**
+     * Gets all operations with their context (path and method)
+     */
+    fun getAllOperationsWithContext(): List<OperationContext> {
+        return paths.flatMap { (path, pathItem) ->
+            listOfNotNull(
+                pathItem.get?.let { OperationContext(it, path, HttpMethod.GET) },
+                pathItem.post?.let { OperationContext(it, path, HttpMethod.POST) },
+                pathItem.put?.let { OperationContext(it, path, HttpMethod.PUT) },
+                pathItem.delete?.let { OperationContext(it, path, HttpMethod.DELETE) },
+                pathItem.patch?.let { OperationContext(it, path, HttpMethod.PATCH) },
+                pathItem.head?.let { OperationContext(it, path, HttpMethod.HEAD) },
+                pathItem.options?.let { OperationContext(it, path, HttpMethod.OPTIONS) }
+            )
+        }
+    }
+    
+    /**
      * Checks if the spec uses OAuth2 security
      */
     fun usesOAuth2(): Boolean {

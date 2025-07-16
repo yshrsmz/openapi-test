@@ -1,7 +1,7 @@
 package com.codingfeline.openapikotlin.gradle.domain.service
 
 import com.codingfeline.openapikotlin.gradle.domain.model.OpenApiSpec
-import com.codingfeline.openapikotlin.gradle.domain.model.Operation
+import com.codingfeline.openapikotlin.gradle.domain.model.OperationContext
 import com.codingfeline.openapikotlin.gradle.domain.model.Schema
 import java.io.File
 
@@ -23,7 +23,7 @@ interface CodeGenerationService {
      */
     fun generateClient(
         spec: OpenApiSpec,
-        operations: List<Operation>,
+        operations: List<OperationContext>,
         packageName: String
     ): GeneratedFile
     
