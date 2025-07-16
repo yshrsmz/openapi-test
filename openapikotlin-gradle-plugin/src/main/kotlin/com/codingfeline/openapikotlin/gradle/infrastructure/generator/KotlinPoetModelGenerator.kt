@@ -181,11 +181,69 @@ class KotlinPoetModelGenerator(
     }
     
     private fun String.toCamelCase(): String {
-        return split("_", "-")
+        // Handle empty or invalid property names
+        if (this.isBlank()) return "property"
+        
+        // Handle special characters by replacing them with underscores
+        val sanitized = this.replace(".", "_")
+            .replace(" ", "_")
+            .replace("-", "_")
+            .replace("/", "_")
+            .replace("\\", "_")
+            .replace("(", "_")
+            .replace(")", "_")
+            .replace("[", "_")
+            .replace("]", "_")
+            .replace("{", "_")
+            .replace("}", "_")
+            .replace("#", "_")
+            .replace("@", "_")
+            .replace("!", "_")
+            .replace("$", "_")
+            .replace("%", "_")
+            .replace("^", "_")
+            .replace("&", "_")
+            .replace("*", "_")
+            .replace("+", "_")
+            .replace("=", "_")
+            .replace("|", "_")
+            .replace(":", "_")
+            .replace(";", "_")
+            .replace("'", "_")
+            .replace("\"", "_")
+            .replace("<", "_")
+            .replace(">", "_")
+            .replace(",", "_")
+            .replace("?", "_")
+            .replace("`", "_")
+            .replace("~", "_")
+        
+        // Convert to camelCase
+        val camelCase = sanitized.split("_")
+            .filter { it.isNotEmpty() }
             .mapIndexed { index, part ->
                 if (index == 0) part.lowercase()
-                else part.capitalize()
+                else part.replaceFirstChar { it.uppercase() }
             }
             .joinToString("")
+        
+        // Handle reserved keywords
+        return when (camelCase) {
+            // Kotlin reserved keywords
+            "abstract", "annotation", "as", "break", "by", "catch", "class",
+            "companion", "const", "constructor", "continue", "crossinline",
+            "data", "delegate", "do", "dynamic", "else", "enum", "expect",
+            "external", "false", "field", "file", "final", "finally", "for",
+            "fun", "get", "if", "import", "in", "infix", "init", "inline",
+            "inner", "interface", "internal", "is", "it", "lateinit", "noinline",
+            "null", "object", "open", "operator", "out", "override", "package",
+            "param", "private", "property", "protected", "public", "receiver",
+            "reified", "return", "sealed", "set", "super", "suspend", "tailrec",
+            "this", "throw", "true", "try", "typealias", "typeof", "val",
+            "value", "var", "vararg", "when", "where", "while" -> "`$camelCase`"
+            // Also handle empty result
+            "" -> "property"
+            else -> camelCase
+        }
     }
 }

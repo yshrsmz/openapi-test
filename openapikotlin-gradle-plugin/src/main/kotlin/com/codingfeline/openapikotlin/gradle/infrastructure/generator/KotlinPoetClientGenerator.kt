@@ -42,26 +42,23 @@ class KotlinPoetClientGenerator(
             
             // Collect parameter types
             op.parameters?.forEach { param ->
-                param.schema?.`$ref`?.let { ref ->
-                    val typeName = ref.substringAfterLast("/")
-                    usedModelTypes.add(typeName)
+                param.schema?.let { schema ->
+                    collectSchemaTypes(schema, usedModelTypes)
                 }
             }
             
             // Collect request body types
             op.requestBody?.content?.values?.forEach { mediaType ->
-                mediaType.schema?.`$ref`?.let { ref ->
-                    val typeName = ref.substringAfterLast("/")
-                    usedModelTypes.add(typeName)
+                mediaType.schema?.let { schema ->
+                    collectSchemaTypes(schema, usedModelTypes)
                 }
             }
             
             // Collect response types
             op.responses.values.forEach { response ->
                 response.content?.values?.forEach { mediaType ->
-                    mediaType.schema?.`$ref`?.let { ref ->
-                        val typeName = ref.substringAfterLast("/")
-                        usedModelTypes.add(typeName)
+                    mediaType.schema?.let { schema ->
+                        collectSchemaTypes(schema, usedModelTypes)
                     }
                 }
             }
@@ -433,6 +430,41 @@ class KotlinPoetClientGenerator(
             "this", "throw", "true", "try", "typealias", "typeof", "val",
             "value", "var", "vararg", "when", "where", "while" -> "`$camelCase`"
             else -> camelCase
+        }
+    }
+    
+    private fun collectSchemaTypes(schema: Schema, types: MutableSet<String>) {
+        // Handle direct references
+        schema.`$ref`?.let { ref ->
+            val typeName = ref.substringAfterLast("/")
+            types.add(typeName)
+            return
+        }
+        
+        // Handle arrays
+        schema.items?.let { itemSchema ->
+            collectSchemaTypes(itemSchema, types)
+        }
+        
+        // Handle object properties
+        schema.properties?.values?.forEach { propSchema ->
+            collectSchemaTypes(propSchema, types)
+        }
+        
+        // Handle schema compositions
+        schema.allOf?.forEach { subSchema ->
+            collectSchemaTypes(subSchema, types)
+        }
+        schema.oneOf?.forEach { subSchema ->
+            collectSchemaTypes(subSchema, types)
+        }
+        schema.anyOf?.forEach { subSchema ->
+            collectSchemaTypes(subSchema, types)
+        }
+        
+        // Handle additionalProperties
+        if (schema.additionalProperties is Schema) {
+            collectSchemaTypes(schema.additionalProperties as Schema, types)
         }
     }
 }
