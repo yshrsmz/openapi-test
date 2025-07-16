@@ -1,6 +1,7 @@
 plugins {
     id("buildsrc.convention.kotlin-jvm")
     id("org.jetbrains.kotlin.plugin.serialization") version "2.1.21"
+    `maven-publish`
 }
 
 dependencies {
@@ -27,4 +28,12 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-params:5.11.4")
     testImplementation("io.mockk:mockk:1.13.14")
     testImplementation("com.google.truth:truth:1.4.4")
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            from(components["java"])
+        }
+    }
 }

@@ -70,7 +70,7 @@ data class ModelsConfig(
     var generateDefaultValues: Boolean = true,
     var useKotlinxDatetime: Boolean = true,
     var generateValidation: Boolean = false
-)
+) : java.io.Serializable
 
 /**
  * Client generation configuration
@@ -81,7 +81,7 @@ data class ClientConfig(
     var generateErrorHandling: Boolean = true,
     var generateAuthHelpers: Boolean = true,
     var useCoroutines: Boolean = true
-)
+) : java.io.Serializable
 
 /**
  * Validation configuration
@@ -90,7 +90,7 @@ data class ValidationConfig(
     var failOnWarnings: Boolean = false,
     var strict: Boolean = true,
     var validateSpec: Boolean = true
-)
+) : java.io.Serializable
 
 /**
  * Creates the OpenAPI extension

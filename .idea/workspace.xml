@@ -4,7 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a02cdbe5-ba4a-42c4-a503-e2bf275a7bcc" name="Changes" comment="" />
+    <list default="true" id="a02cdbe5-ba4a-42c4-a503-e2bf275a7bcc" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/example/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/openapikotlin-gradle-plugin/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/openapikotlin-gradle-plugin/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/openapikotlin-gradle-plugin/src/main/kotlin/com/codingfeline/openapikotlin/gradle/OpenApiKotlinExtension.kt" beforeDir="false" afterPath="$PROJECT_DIR$/openapikotlin-gradle-plugin/src/main/kotlin/com/codingfeline/openapikotlin/gradle/OpenApiKotlinExtension.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/openapikotlin-gradle-plugin/src/main/kotlin/com/codingfeline/openapikotlin/gradle/infrastructure/generator/KotlinPoetClientGenerator.kt" beforeDir="false" afterPath="$PROJECT_DIR$/openapikotlin-gradle-plugin/src/main/kotlin/com/codingfeline/openapikotlin/gradle/infrastructure/generator/KotlinPoetClientGenerator.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/openapikotlin-runtime/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/openapikotlin-runtime/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/settings.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/settings.gradle.kts" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -95,7 +103,7 @@
       <option name="presentableId" value="Default" />
       <updated>1752654439451</updated>
       <workItem from="1752654440536" duration="7883000" />
-      <workItem from="1752671072426" duration="4546000" />
+      <workItem from="1752671072426" duration="5048000" />
     </task>
     <servers />
   </component>

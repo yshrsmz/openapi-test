@@ -6,6 +6,7 @@ plugins {
     // Gradle plugin development
     `java-gradle-plugin`
     id("com.gradle.plugin-publish") version "1.2.0"
+    `maven-publish`
 }
 
 dependencies {

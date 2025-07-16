@@ -353,7 +353,17 @@ class KotlinPoetClientGenerator(
     }
     
     private fun String.toCamelCase(): String {
-        return split("_", "-")
+        // Handle special characters by replacing them with underscores first
+        val sanitized = replace(".", "_")
+            .replace("[", "_")
+            .replace("]", "_")
+            .replace(" ", "_")
+            .replace("-", "_")
+            .replace("/", "_")
+            .replace("\\", "_")
+        
+        return sanitized.split("_")
+            .filter { it.isNotEmpty() }
             .mapIndexed { index, part ->
                 if (index == 0) part.lowercase()
                 else part.replaceFirstChar { it.uppercase() }

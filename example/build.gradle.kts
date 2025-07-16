@@ -1,10 +1,22 @@
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+}
+
 plugins {
     id("buildsrc.convention.kotlin-jvm")
-    // id("com.codingfeline.openapi") version "1.0.0" // Will enable after plugin is published
+    id("com.codingfeline.openapi") version "1.0.0-SNAPSHOT"
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
 }
 
 dependencies {
-    implementation(project(":openapikotlin-runtime"))
+    implementation("com.codingfeline.openapikotlin:openapikotlin-runtime:1.0.0-SNAPSHOT")
     
     // Ktor client engine for runtime
     implementation("io.ktor:ktor-client-cio:3.2.2")
@@ -15,14 +27,13 @@ dependencies {
     testImplementation("com.google.truth:truth:1.5.0")
 }
 
-// OpenAPI plugin configuration (will enable after plugin is published)
-/*
-openApi {
+// OpenAPI plugin configuration
+openApiKotlin {
     // Use the Ory API spec as an example
     inputSpec = file("../openapi/ory-client-1.20.22.json")
     
     // Output directory for generated code
-    outputDir = file("$buildDir/generated/openapi")
+    outputDir = layout.buildDirectory.file("generated/openapi").get().asFile
     
     // Package name for generated code
     packageName = "com.example.api.ory"
@@ -35,7 +46,6 @@ openApi {
     
     // Client generation options
     client {
-        generateClient = true
         clientClassName = "OryApiClient"
         generateErrorHandling = true
         generateAuthHelpers = true
@@ -47,20 +57,8 @@ openApi {
         strict = true
     }
 }
-*/
-
-// Make generated sources available to the main source set
-/*
-kotlin {
-    sourceSets {
-        main {
-            kotlin.srcDir("$buildDir/generated/openapi")
-        }
-    }
-}
 
 // Ensure code generation runs before compilation
 tasks.compileKotlin {
-    // dependsOn("generateOpenApiCode")
+    dependsOn("generateOpenApiCode")
 }
-*/
