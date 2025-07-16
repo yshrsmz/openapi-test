@@ -59,6 +59,10 @@ class GenerateCodeUseCase(
         val schemas = spec.getAllSchemas()
         val modelFiles = modelGenerator.generateModels(schemas, modelsPackage.value)
         
+        // 4.5. Generate special types if needed
+        val specialTypesGenerator = com.codingfeline.openapikotlin.gradle.infrastructure.generator.SpecialTypesGenerator()
+        val specialTypeFiles = specialTypesGenerator.generateModels(spec, modelsPackage.value)
+        
         // 5. Generate client code
         val operations = spec.getAllOperationsWithContext()
         val clientFile = clientGenerator.generateClient(spec, operations, clientPackage.value)
@@ -71,7 +75,7 @@ class GenerateCodeUseCase(
         }
         
         // 7. Write all generated files
-        val allFiles = modelFiles + clientFile + authFiles
+        val allFiles = modelFiles + specialTypeFiles + clientFile + authFiles
         allFiles.forEach { generatedFile ->
             fileWriter.write(generatedFile, outputDirectory)
         }
@@ -79,6 +83,7 @@ class GenerateCodeUseCase(
         // 8. Log summary
         println("Code generation completed:")
         println("  - Generated ${modelFiles.size} model classes")
+        println("  - Generated ${specialTypeFiles.size} special type files")
         println("  - Generated 1 client class")
         println("  - Generated ${authFiles.size} auth helper classes")
         println("  - Total files: ${allFiles.size}")
