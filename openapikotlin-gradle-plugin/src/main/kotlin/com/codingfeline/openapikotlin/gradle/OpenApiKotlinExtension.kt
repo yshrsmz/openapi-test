@@ -4,7 +4,6 @@ import org.gradle.api.Action
 import org.gradle.api.Project
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.Property
-import org.gradle.kotlin.dsl.create
 import java.io.File
 
 /**
@@ -97,7 +96,7 @@ data class ValidationConfig(
  * Creates the OpenAPI extension
  */
 internal fun Project.createOpenApiExtension(): OpenApiKotlinExtension {
-    return extensions.create<OpenApiKotlinExtension>("openApi").apply {
+    return extensions.create("openApi", OpenApiKotlinExtension::class.java).apply {
         outputDir.convention(layout.buildDirectory.dir("generated/openapi").map { it.asFile })
         models.convention(ModelsConfig())
         client.convention(ClientConfig())

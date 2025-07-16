@@ -3,7 +3,6 @@ package com.codingfeline.openapikotlin.gradle
 import com.codingfeline.openapikotlin.gradle.infrastructure.gradle.GenerateTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.kotlin.dsl.register
 
 /**
  * Gradle plugin for generating Kotlin code from OpenAPI specifications
@@ -15,7 +14,7 @@ class OpenApiKotlinPlugin : Plugin<Project> {
         val extension = project.createOpenApiExtension()
         
         // Register the code generation task
-        project.tasks.register<GenerateTask>("generateOpenApiCode") {
+        project.tasks.register("generateOpenApiCode", GenerateTask::class.java) {
             group = "openapi"
             description = "Generates Kotlin code from OpenAPI specification"
             
@@ -38,7 +37,7 @@ class OpenApiKotlinPlugin : Plugin<Project> {
         project.afterEvaluate {
             project.extensions.findByType(org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension::class.java)?.apply {
                 sourceSets.getByName("main") {
-                    kotlin.srcDir(extension.outputDir)
+                    kotlin.srcDir(extension.outputDir.get())
                 }
             }
         }

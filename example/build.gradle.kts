@@ -1,6 +1,6 @@
 plugins {
     id("buildsrc.convention.kotlin-jvm")
-    id("com.codingfeline.openapi") version "1.0.0"
+    // id("com.codingfeline.openapi") version "1.0.0" // Will enable after plugin is published
 }
 
 dependencies {
@@ -14,7 +14,8 @@ dependencies {
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0")
 }
 
-// OpenAPI plugin configuration
+// OpenAPI plugin configuration (will enable after plugin is published)
+/*
 openApi {
     // Use the Ory API spec as an example
     inputSpec = file("../openapi/ory-client-1.20.22.json")
@@ -45,8 +46,10 @@ openApi {
         strict = true
     }
 }
+*/
 
 // Make generated sources available to the main source set
+/*
 kotlin {
     sourceSets {
         main {
@@ -57,5 +60,6 @@ kotlin {
 
 // Ensure code generation runs before compilation
 tasks.compileKotlin {
-    dependsOn("generateOpenApiCode")
+    // dependsOn("generateOpenApiCode")
 }
+*/
