@@ -5,32 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a02cdbe5-ba4a-42c4-a503-e2bf275a7bcc" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.devcontainer/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.devcontainer/devcontainer.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/openapikotlin-runtime/build.gradle.kts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/openapikotlin-runtime/src/main/kotlin/com/codingfeline/openapikotlin/runtime/auth/AuthInterceptor.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/openapikotlin-runtime/src/main/kotlin/com/codingfeline/openapikotlin/runtime/auth/OAuth2Client.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/openapikotlin-runtime/src/main/kotlin/com/codingfeline/openapikotlin/runtime/auth/TokenManager.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/openapikotlin-runtime/src/main/kotlin/com/codingfeline/openapikotlin/runtime/http/ApiClient.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/openapikotlin-runtime/src/main/kotlin/com/codingfeline/openapikotlin/runtime/http/ApiException.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/openapikotlin-runtime/src/main/kotlin/com/codingfeline/openapikotlin/runtime/http/ResponseValidator.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/openapikotlin-runtime/src/main/kotlin/com/codingfeline/openapikotlin/runtime/serialization/DateTimeSerializers.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/openapikotlin-runtime/src/main/kotlin/com/codingfeline/openapikotlin/runtime/serialization/EnumSerializer.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/openapikotlin-runtime/src/main/kotlin/com/codingfeline/openapikotlin/runtime/validation/ConstraintValidator.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/openapikotlin-runtime/src/main/kotlin/com/codingfeline/openapikotlin/runtime/validation/ValidationException.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/openapikotlin-runtime/src/test/kotlin/com/codingfeline/openapikotlin/runtime/auth/AuthInterceptorTest.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/openapikotlin-runtime/src/test/kotlin/com/codingfeline/openapikotlin/runtime/auth/OAuth2ClientTest.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/openapikotlin-runtime/src/test/kotlin/com/codingfeline/openapikotlin/runtime/auth/TokenManagerTest.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/openapikotlin-runtime/src/test/kotlin/com/codingfeline/openapikotlin/runtime/http/ApiClientTest.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/openapikotlin-runtime/src/test/kotlin/com/codingfeline/openapikotlin/runtime/http/ApiExceptionTest.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/openapikotlin-runtime/src/test/kotlin/com/codingfeline/openapikotlin/runtime/http/ResponseValidatorTest.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/openapikotlin-runtime/src/test/kotlin/com/codingfeline/openapikotlin/runtime/serialization/DateTimeSerializersTest.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/openapikotlin-runtime/src/test/kotlin/com/codingfeline/openapikotlin/runtime/serialization/EnumSerializerTest.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/openapikotlin-runtime/src/test/kotlin/com/codingfeline/openapikotlin/runtime/validation/ConstraintValidatorTest.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/openapikotlin-runtime/src/test/kotlin/com/codingfeline/openapikotlin/runtime/validation/ValidationExceptionTest.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/settings.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/settings.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/openapikotlin-gradle-plugin/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/openapikotlin-gradle-plugin/build.gradle.kts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
