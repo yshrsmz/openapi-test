@@ -42,3 +42,7 @@ gradlePlugin {
         }
     }
 }
+
+tasks.processResources {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+}
