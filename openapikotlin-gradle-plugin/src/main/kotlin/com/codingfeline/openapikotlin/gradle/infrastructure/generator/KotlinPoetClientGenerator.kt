@@ -152,7 +152,7 @@ class KotlinPoetClientGenerator(
             val paramType = typeMapper.mapType(param.schema!!, !param.required)
             funcBuilder.addParameter(
                 ParameterSpec.builder(
-                    param.name.toCamelCase(),
+                    param.name.sanitizeParameterName(),
                     paramType.toTypeName()
                 ).apply {
                     if (!param.required) {
@@ -195,7 +195,7 @@ class KotlinPoetClientGenerator(
         
         // Set URL with path parameters
         val pathWithParams = operationContext.path.replace("\\{(.+?)\\}".toRegex()) { matchResult ->
-            val paramName = matchResult.groupValues[1].toCamelCase()
+            val paramName = matchResult.groupValues[1].sanitizeParameterName()
             "\$$paramName"
         }
         codeBuilder.addStatement("url(\"\$baseUrl%L\")", pathWithParams)
@@ -216,7 +216,7 @@ class KotlinPoetClientGenerator(
         operation.parameters?.forEach { param ->
             when (param.`in`) {
                 ParameterLocation.QUERY -> {
-                    val paramName = param.name.toCamelCase()
+                    val paramName = param.name.sanitizeParameterName()
                     if (param.required) {
                         codeBuilder.addStatement("parameter(%S, %L)", param.name, paramName)
                     } else {
@@ -224,7 +224,7 @@ class KotlinPoetClientGenerator(
                     }
                 }
                 ParameterLocation.HEADER -> {
-                    val paramName = param.name.toCamelCase()
+                    val paramName = param.name.sanitizeParameterName()
                     if (param.required) {
                         codeBuilder.addStatement("header(%S, %L)", param.name, paramName)
                     } else {
@@ -415,5 +415,24 @@ class KotlinPoetClientGenerator(
                 else part.replaceFirstChar { it.uppercase() }
             }
             .joinToString("")
+    }
+    
+    private fun String.sanitizeParameterName(): String {
+        val camelCase = this.toCamelCase()
+        return when (camelCase) {
+            // Kotlin reserved keywords
+            "abstract", "annotation", "as", "break", "by", "catch", "class",
+            "companion", "const", "constructor", "continue", "crossinline",
+            "data", "delegate", "do", "dynamic", "else", "enum", "expect",
+            "external", "false", "field", "file", "final", "finally", "for",
+            "fun", "get", "if", "import", "in", "infix", "init", "inline",
+            "inner", "interface", "internal", "is", "it", "lateinit", "noinline",
+            "null", "object", "open", "operator", "out", "override", "package",
+            "param", "private", "property", "protected", "public", "receiver",
+            "reified", "return", "sealed", "set", "super", "suspend", "tailrec",
+            "this", "throw", "true", "try", "typealias", "typeof", "val",
+            "value", "var", "vararg", "when", "where", "while" -> "`$camelCase`"
+            else -> camelCase
+        }
     }
 }
