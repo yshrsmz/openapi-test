@@ -67,20 +67,22 @@ class KotlinPoetClientGenerator(
             }
         }
         
-        val clientPackage = "$packageName.client"
-        val fileSpec = FileSpec.builder(clientPackage, config.clientClassName)
+        val fileSpec = FileSpec.builder(packageName, config.clientClassName)
             .addType(clientClass)
             .addImports()
             .apply {
                 // Add imports for all used model types
-                val modelsPackage = "$packageName.models"
+                // The packageName passed to us is already the client package,
+                // so we need to go up one level and then to models
+                val basePackage = packageName.substringBeforeLast(".client")
+                val modelsPackage = "$basePackage.models"
                 usedModelTypes.forEach { modelType ->
                     addImport(modelsPackage, modelType)
                 }
             }
             .build()
         
-        val relativePath = PackageName(clientPackage).toPath() + "/${config.clientClassName}.kt"
+        val relativePath = PackageName(packageName).toPath() + "/${config.clientClassName}.kt"
         return GeneratedFile(relativePath, fileSpec.toString())
     }
     
@@ -328,33 +330,31 @@ class KotlinPoetClientGenerator(
             )
             .build()
         
-        val clientPackage = "$packageName.client"
-        val fileSpec = FileSpec.builder(clientPackage, "AuthConfig")
+        val fileSpec = FileSpec.builder(packageName, "AuthConfig")
             .addType(configClass)
             .build()
         
-        val relativePath = PackageName(clientPackage).toPath() + "/AuthConfig.kt"
+        val relativePath = PackageName(packageName).toPath() + "/AuthConfig.kt"
         return GeneratedFile(relativePath, fileSpec.toString())
     }
     
     private fun generateAuthHelper(spec: OpenApiSpec, packageName: String): GeneratedFile {
-        val clientPackage = "$packageName.client"
         val helperClass = TypeSpec.classBuilder("AuthHelper")
             .addFunction(
                 FunSpec.builder("configureAuth")
                     .addParameter("httpClient", KTOR_CLIENT)
-                    .addParameter("config", ClassName(clientPackage, "OAuth2Config"))
+                    .addParameter("config", ClassName(packageName, "OAuth2Config"))
                     .addCode("// Configure OAuth2 authentication")
                     .build()
             )
             .build()
         
-        val fileSpec = FileSpec.builder(clientPackage, "AuthHelper")
+        val fileSpec = FileSpec.builder(packageName, "AuthHelper")
             .addType(helperClass)
             .addImport("com.codingfeline.openapikotlin.runtime.auth", "OAuth2Client")
             .build()
         
-        val relativePath = PackageName(clientPackage).toPath() + "/AuthHelper.kt"
+        val relativePath = PackageName(packageName).toPath() + "/AuthHelper.kt"
         return GeneratedFile(relativePath, fileSpec.toString())
     }
     
