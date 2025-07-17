@@ -8,6 +8,7 @@ buildscript {
 plugins {
     id("buildsrc.convention.kotlin-jvm")
     id("com.codingfeline.openapi") version "1.0.0-SNAPSHOT"
+    application
 }
 
 repositories {
@@ -61,4 +62,9 @@ openApiKotlin {
 // Ensure code generation runs before compilation
 tasks.compileKotlin {
     dependsOn("generateOpenApiCode")
+}
+
+// Application plugin configuration
+application {
+    mainClass.set("com.example.api.Example")
 }
