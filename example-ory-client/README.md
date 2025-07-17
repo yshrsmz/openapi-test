@@ -1,4 +1,4 @@
-# OpenAPI Kotlin Example Module
+# Ory API Client Example
 
 This module demonstrates how to use the OpenAPI Kotlin code generator plugin.
 
@@ -70,8 +70,8 @@ println("Current user: ${identity.email}")
 To generate code and run the example:
 
 ```bash
-./gradlew :example:generateOpenApiCode
-./gradlew :example:run
+./gradlew :example-ory-client:generateOpenApiCode
+./gradlew :example-ory-client:run
 ```
 
 ## Testing

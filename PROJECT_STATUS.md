@@ -77,7 +77,7 @@ openapi-test/
 │   ├── domain/                  # Domain models and interfaces
 │   ├── application/             # Use cases
 │   └── infrastructure/          # Implementations
-├── example/                     # Example project using the plugin
+├── example-ory-client/          # Example project using Ory API
 └── openapi/                     # Test OpenAPI specifications
 ```
 
