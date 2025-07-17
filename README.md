@@ -19,6 +19,7 @@ This is a multi-module Gradle project consisting of:
 - **openapikotlin-runtime**: Runtime library with OAuth2 client, serializers, and base classes
 - **openapikotlin-gradle-plugin**: Gradle plugin for code generation
 - **example-simple-api**: Simple example demonstrating basic plugin usage
+- **example-petstore**: Classic Swagger Petstore example with pets, orders, and users
 - **example-ory-client**: Complex example using the Ory API (400+ models)
 
 ## Quick Start
@@ -186,17 +187,21 @@ openapikotlin-gradle-plugin/
 
 ### Example Projects
 
-We provide two example modules demonstrating different use cases:
+We provide three example modules demonstrating different use cases:
 
 ```bash
 # Simple API example - great for getting started
 ./gradlew :example-simple-api:run
+
+# Classic Petstore example - well-known API with various features
+./gradlew :example-petstore:run
 
 # Complex real-world example using Ory API
 ./gradlew :example-ory-client:run
 
 # Generate code for any example
 ./gradlew :example-simple-api:generateOpenApiCode
+./gradlew :example-petstore:generateOpenApiCode
 ./gradlew :example-ory-client:generateOpenApiCode
 ```
 

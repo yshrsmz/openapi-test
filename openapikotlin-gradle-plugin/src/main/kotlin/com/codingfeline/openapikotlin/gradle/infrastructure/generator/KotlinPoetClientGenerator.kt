@@ -245,6 +245,8 @@ class KotlinPoetClientGenerator(
         
         if (returnType != UNIT) {
             codeBuilder.endControlFlow()
+            
+            // For all types, use body() - Ktor should handle generics properly
             codeBuilder.add(".%T<%T>()", 
                 ClassName("io.ktor.client.call", "body"),
                 returnType

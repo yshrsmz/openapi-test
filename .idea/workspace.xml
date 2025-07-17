@@ -5,10 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a02cdbe5-ba4a-42c4-a503-e2bf275a7bcc" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/openapikotlin-gradle-plugin/src/main/kotlin/com/codingfeline/openapikotlin/gradle/infrastructure/generator/KotlinPoetClientGenerator.kt" beforeDir="false" afterPath="$PROJECT_DIR$/openapikotlin-gradle-plugin/src/main/kotlin/com/codingfeline/openapikotlin/gradle/infrastructure/generator/KotlinPoetClientGenerator.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/settings.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/settings.gradle.kts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test-simple/build.gradle.kts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test-simple/src/main/kotlin/com/example/simple/Main.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test-simple/src/main/kotlin/com/example/simple/Test.kt" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,6 +34,24 @@
               <path>
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
                 <item name="openapi-test" type="f1a62948:ProjectNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="openapi-test" type="f1a62948:ProjectNode" />
+                <item name="example" type="2d1252cf:ModuleNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="openapi-test" type="f1a62948:ProjectNode" />
+                <item name="example" type="2d1252cf:ModuleNode" />
+                <item name="Dependencies" type="6de06a37:ExternalSystemViewDefaultContributor$MyDependenciesNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="openapi-test" type="f1a62948:ProjectNode" />
+                <item name="example" type="2d1252cf:ModuleNode" />
+                <item name="Dependencies" type="6de06a37:ExternalSystemViewDefaultContributor$MyDependenciesNode" />
+                <item name="testCompileClasspath" type="62daadca:ExternalSystemViewDefaultContributor$DependencyScopeExternalSystemNode" />
               </path>
               <path>
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />

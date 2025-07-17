@@ -30,7 +30,8 @@ dependencyResolutionManagement {
 // Learn more about structuring projects with Gradle - https://docs.gradle.org/8.7/userguide/multi_project_builds.html
 include(":openapikotlin-runtime")
 include(":openapikotlin-gradle-plugin")
-include(":example-ory-client")
 include(":example-simple-api")
+include(":example-petstore")
+include(":example-ory-client")
 
 rootProject.name = "openapi-test"
