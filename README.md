@@ -18,8 +18,8 @@ This is a multi-module Gradle project consisting of:
 
 - **openapikotlin-runtime**: Runtime library with OAuth2 client, serializers, and base classes
 - **openapikotlin-gradle-plugin**: Gradle plugin for code generation
-- **example-ory-client**: Example project demonstrating plugin usage with Ory API
-- **test-simple**: Simple test project for development
+- **example-simple-api**: Simple example demonstrating basic plugin usage
+- **example-ory-client**: Complex example using the Ory API (400+ models)
 
 ## Quick Start
 
@@ -186,13 +186,17 @@ openapikotlin-gradle-plugin/
 
 ### Example Projects
 
-Check the `example-ory-client` and `test-simple` modules for usage examples:
+We provide two example modules demonstrating different use cases:
 
 ```bash
-# Run the simple test example
-./gradlew :test-simple:run
+# Simple API example - great for getting started
+./gradlew :example-simple-api:run
 
-# Generate code for the Ory example project
+# Complex real-world example using Ory API
+./gradlew :example-ory-client:run
+
+# Generate code for any example
+./gradlew :example-simple-api:generateOpenApiCode
 ./gradlew :example-ory-client:generateOpenApiCode
 ```
 

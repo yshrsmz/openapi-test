@@ -31,6 +31,6 @@ dependencyResolutionManagement {
 include(":openapikotlin-runtime")
 include(":openapikotlin-gradle-plugin")
 include(":example-ory-client")
-include(":test-simple")
+include(":example-simple-api")
 
 rootProject.name = "openapi-test"
