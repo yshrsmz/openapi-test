@@ -51,7 +51,7 @@ abstract class GenerateTask : DefaultTask() {
         
         // Create infrastructure implementations
         val parser = SwaggerParserAdapter()
-        val typeMapper = KotlinPoetTypeMapper(basePackage)
+        val typeMapper = KotlinPoetTypeMapper(basePackage, modelsConfig.get())
         val modelGenerator = KotlinPoetModelGenerator(typeMapper, modelsConfig.get())
         val clientGenerator = KotlinPoetClientGenerator(typeMapper, clientConfig.get())
         val fileWriter = FileWriter()
