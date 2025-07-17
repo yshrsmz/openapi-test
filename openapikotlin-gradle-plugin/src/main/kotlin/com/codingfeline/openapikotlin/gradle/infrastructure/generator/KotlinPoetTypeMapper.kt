@@ -1,19 +1,41 @@
 package com.codingfeline.openapikotlin.gradle.infrastructure.generator
 
+import com.codingfeline.openapikotlin.gradle.DynamicTypeHandling
+import com.codingfeline.openapikotlin.gradle.ModelsConfig
 import com.codingfeline.openapikotlin.gradle.domain.model.Schema
 import com.codingfeline.openapikotlin.gradle.domain.model.SchemaType
 import com.codingfeline.openapikotlin.gradle.domain.service.TypeMappingService
 import com.codingfeline.openapikotlin.gradle.domain.value.KotlinType
 import com.codingfeline.openapikotlin.gradle.domain.value.PackageName
+import org.gradle.api.logging.LogLevel
+import org.gradle.api.logging.Logger
+import org.gradle.api.logging.Logging
 
 /**
  * Type mapper implementation using KotlinPoet
  */
-class KotlinPoetTypeMapper(val basePackage: String) : TypeMappingService {
+class KotlinPoetTypeMapper(
+    val basePackage: String,
+    private val config: ModelsConfig = ModelsConfig()
+) : TypeMappingService {
+    
+    private val logger: Logger = Logging.getLogger(KotlinPoetTypeMapper::class.java)
     
     private val modelsPackage = PackageName(basePackage).append("models")
     
     override fun mapType(schema: Schema, nullable: Boolean): KotlinType {
+        // Check for schema type overrides first
+        schema.name?.let { name ->
+            config.schemaTypeOverrides[name]?.let { override ->
+                return parseTypeOverride(override, nullable || schema.nullable)
+            }
+        }
+        
+        // Handle untyped schemas
+        if (schema.type == null && !schema.isReference()) {
+            return handleUntypedSchema(schema, nullable || schema.nullable)
+        }
+        
         val baseType = when {
             schema.isReference() -> mapReferenceType(schema.getReferenceName()!!, false)
             schema.isArray() -> mapArrayType(schema.items!!, false)
@@ -114,5 +136,94 @@ class KotlinPoetTypeMapper(val basePackage: String) : TypeMappingService {
             type.isCollection -> type.defaultValue
             else -> null // No default for custom types
         }
+    }
+    
+    /**
+     * Handles schemas with no type definition
+     */
+    private fun handleUntypedSchema(schema: Schema, nullable: Boolean): KotlinType {
+        if (config.useJsonElementForDynamicTypes) {
+            // Use smart type inference
+            return inferDynamicType(schema).let {
+                if (nullable) it.nullable() else it
+            }
+        } else {
+            // Handle based on configured strategy
+            when (config.dynamicTypeHandling) {
+                DynamicTypeHandling.ALLOW -> {
+                    return if (nullable) KotlinType.Any.nullable() else KotlinType.Any
+                }
+                
+                DynamicTypeHandling.WARN -> {
+                    logger.warn("""
+                        Schema '${schema.name ?: "unnamed"}' has no type definition and will be mapped to 'Any'.
+                        This will fail at runtime with: "Serializer has not been found for type 'Any'"
+                        
+                        To fix this, either:
+                        1. Set useJsonElementForDynamicTypes = true in your build.gradle.kts
+                        2. Add a type override: schemaTypeOverrides["${schema.name}"] = "JsonElement"
+                        3. Fix the OpenAPI specification to include a type
+                    """.trimIndent())
+                    return if (nullable) KotlinType.Any.nullable() else KotlinType.Any
+                }
+                
+                DynamicTypeHandling.FAIL -> {
+                    throw IllegalStateException("""
+                        Schema '${schema.name ?: "unnamed"}' has no type definition.
+                        
+                        The generated code would fail at runtime with: "Serializer has not been found for type 'Any'"
+                        
+                        To fix this, either:
+                        1. Set useJsonElementForDynamicTypes = true in your build.gradle.kts
+                        2. Add a type override: schemaTypeOverrides["${schema.name}"] = "JsonElement"
+                        3. Fix the OpenAPI specification to include a type
+                    """.trimIndent())
+                }
+            }
+        }
+    }
+    
+    /**
+     * Infers the appropriate JSON type based on schema structure
+     */
+    private fun inferDynamicType(schema: Schema): KotlinType {
+        return when {
+            // If we can infer it's an object
+            schema.type == SchemaType.OBJECT || 
+            schema.properties != null || 
+            schema.additionalProperties != null -> KotlinType.JsonObject
+            
+            // If we can infer it's an array
+            schema.type == SchemaType.ARRAY || 
+            schema.items != null -> KotlinType.JsonArray
+            
+            // Default to most general type
+            else -> KotlinType.JsonElement
+        }
+    }
+    
+    /**
+     * Parses a type override string into a KotlinType
+     */
+    private fun parseTypeOverride(override: String, nullable: Boolean): KotlinType {
+        val type = when (override) {
+            "JsonElement" -> KotlinType.JsonElement
+            "JsonObject" -> KotlinType.JsonObject
+            "JsonArray" -> KotlinType.JsonArray
+            "JsonPrimitive" -> KotlinType.JsonPrimitive
+            "Map<String, JsonElement>" -> KotlinType.Map(KotlinType.String, KotlinType.JsonElement)
+            else -> {
+                // Parse custom type strings like "com.example.CustomType"
+                val parts = override.split(".")
+                if (parts.size >= 2) {
+                    val packageName = parts.dropLast(1).joinToString(".")
+                    val simpleName = parts.last()
+                    KotlinType(simpleName, packageName)
+                } else {
+                    KotlinType(override)
+                }
+            }
+        }
+        return if (nullable) type.nullable() else type
     }
 }
