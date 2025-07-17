@@ -115,16 +115,9 @@ class KotlinPoetModelGenerator(
                 else -> ANY
             }.copy(nullable = resolvedSchema.nullable == true)
             
-            // Ensure type alias name follows Kotlin naming conventions
-            // If the name starts with lowercase, add underscore prefix to avoid conflicts
-            val typeAliasName = if (name.firstOrNull()?.isLowerCase() == true) {
-                "_${name.replaceFirstChar { it.uppercase() }}"
-            } else {
-                name
-            }
-            
-            val fileSpec = FileSpec.builder(packageName, typeAliasName)
-                .addTypeAlias(TypeAliasSpec.builder(typeAliasName, kotlinType).build())
+            // Use the original name for the type alias to maintain compatibility
+            val fileSpec = FileSpec.builder(packageName, name)
+                .addTypeAlias(TypeAliasSpec.builder(name, kotlinType).build())
                 .apply {
                     if (kotlinType == INSTANT || kotlinType == LOCAL_DATE || 
                         kotlinType.copy(nullable = false) == INSTANT || 
@@ -134,7 +127,7 @@ class KotlinPoetModelGenerator(
                 }
                 .build()
             
-            val relativePath = PackageName(packageName).toPath() + "/$typeAliasName.kt"
+            val relativePath = PackageName(packageName).toPath() + "/$name.kt"
             return GeneratedFile(relativePath, fileSpec.toString())
         }
         
