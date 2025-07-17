@@ -4,6 +4,7 @@ import com.codingfeline.openapikotlin.gradle.ModelsConfig
 import com.codingfeline.openapikotlin.gradle.domain.model.OpenApiSpec
 import com.codingfeline.openapikotlin.gradle.domain.model.OperationContext
 import com.codingfeline.openapikotlin.gradle.domain.model.Schema
+import com.codingfeline.openapikotlin.gradle.domain.model.SchemaType
 import com.codingfeline.openapikotlin.gradle.domain.service.CodeGenerationService
 import com.codingfeline.openapikotlin.gradle.domain.service.GeneratedFile
 import com.codingfeline.openapikotlin.gradle.domain.value.PackageName
@@ -21,19 +22,55 @@ class KotlinPoetModelGenerator(
 ) : CodeGenerationService {
     
     private var allSchemas: Map<String, Schema> = emptyMap()
+    private val interfaceImplementations = mutableMapOf<String, String>() // schema name -> interface name
     
     override fun generateModels(schemas: Map<String, Schema>, packageName: String): List<GeneratedFile> {
         // Store all schemas for reference resolution
         allSchemas = schemas
         
-        return schemas.mapNotNull { (name, schema) ->
-            // Skip generating for references or primitives without enums
-            if (schema.isReference() || (schema.isPrimitive() && schema.enum == null)) {
-                null
-            } else {
-                generateModel(name, schema, packageName)
+        // First pass: identify oneOf relationships
+        schemas.forEach { (name, schema) ->
+            if (schema.oneOf != null) {
+                schema.oneOf.forEach { oneOfSchema ->
+                    if (oneOfSchema.isReference()) {
+                        val refName = oneOfSchema.getReferenceName()
+                        if (refName != null) {
+                            interfaceImplementations[refName] = name
+                        }
+                    }
+                }
             }
         }
+        
+        val models = mutableListOf<GeneratedFile>()
+        
+        // Second pass: generate models
+        schemas.forEach { (name, schema) ->
+            // Skip generating for references or primitives without enums
+            if (!schema.isReference() && !(schema.isPrimitive() && schema.enum == null)) {
+                models.add(generateModel(name, schema, packageName))
+                
+                // Also generate enums for properties with enum values
+                val nestedEnums = generateNestedEnums(name, schema, packageName)
+                models.addAll(nestedEnums)
+            }
+        }
+        
+        return models
+    }
+    
+    private fun generateNestedEnums(parentName: String, schema: Schema, packageName: String): List<GeneratedFile> {
+        val enums = mutableListOf<GeneratedFile>()
+        val resolvedSchema = resolveSchemaComposition(schema, packageName)
+        
+        resolvedSchema.properties?.forEach { (propName, propSchema) ->
+            if (propSchema.enum != null && propSchema.type == SchemaType.STRING) {
+                val enumName = "${parentName}${propName.replaceFirstChar { it.uppercase() }}"
+                enums.add(generateModel(enumName, propSchema, packageName))
+            }
+        }
+        
+        return enums
     }
     
     private fun generateModel(name: String, schema: Schema, packageName: String): GeneratedFile {
@@ -46,6 +83,7 @@ class KotlinPoetModelGenerator(
             resolvedSchema.enum != null -> generateEnumClass(name, resolvedSchema)
             resolvedSchema.properties != null -> generateDataClass(name, resolvedSchema, packageName)
             resolvedSchema.oneOf != null -> generateSealedInterface(name, resolvedSchema, packageName)
+            resolvedSchema.anyOf != null -> generateAnyOfClass(name, resolvedSchema, packageName)
             else -> generateTypeAlias(name, resolvedSchema)
         }
         
@@ -66,6 +104,7 @@ class KotlinPoetModelGenerator(
     private fun resolveSchemaComposition(schema: Schema, packageName: String): Schema {
         return when {
             schema.allOf != null -> mergeAllOfSchemas(schema, packageName)
+            schema.oneOf != null -> schema // oneOf is handled differently in generateModel
             else -> schema
         }
     }
@@ -106,15 +145,20 @@ class KotlinPoetModelGenerator(
     private fun resolveSchemaReference(schema: Schema): Schema {
         return if (schema.isReference()) {
             val refName = schema.getReferenceName()
-            allSchemas[refName] ?: schema
+            val resolved = allSchemas[refName] ?: schema
+            // If the resolved schema also has allOf, we need to resolve it recursively
+            if (resolved.allOf != null) {
+                mergeAllOfSchemas(resolved, "")
+            } else {
+                resolved
+            }
         } else {
             schema
         }
     }
     
     private fun generateSealedInterface(name: String, schema: Schema, packageName: String): TypeSpec {
-        // TODO: Implement oneOf as sealed interface
-        return TypeSpec.interfaceBuilder(name)
+        val interfaceBuilder = TypeSpec.interfaceBuilder(name)
             .addModifiers(KModifier.SEALED)
             .addAnnotation(Serializable::class)
             .apply {
@@ -122,6 +166,42 @@ class KotlinPoetModelGenerator(
                     addKdoc(schema.description)
                 }
             }
+        
+        // If there's a discriminator, add it as a property
+        schema.discriminator?.let { discriminator ->
+            val propertySpec = PropertySpec.builder(
+                discriminator.propertyName.toCamelCase(),
+                STRING
+            )
+                .addModifiers(KModifier.ABSTRACT)
+                .build()
+            interfaceBuilder.addProperty(propertySpec)
+        }
+        
+        return interfaceBuilder.build()
+    }
+    
+    private fun generateAnyOfClass(name: String, schema: Schema, packageName: String): TypeSpec {
+        // For anyOf, we generate a simple data class with a value of type Any
+        // In a real implementation, we'd need a custom serializer
+        return TypeSpec.classBuilder(name)
+            .addModifiers(KModifier.DATA)
+            .addAnnotation(Serializable::class)
+            .apply {
+                if (schema.description != null) {
+                    addKdoc(schema.description)
+                }
+            }
+            .primaryConstructor(
+                FunSpec.constructorBuilder()
+                    .addParameter("value", ANY)
+                    .build()
+            )
+            .addProperty(
+                PropertySpec.builder("value", ANY)
+                    .initializer("value")
+                    .build()
+            )
             .build()
     }
     
@@ -159,22 +239,40 @@ class KotlinPoetModelGenerator(
             classBuilder.addKdoc(schema.description)
         }
         
+        // Check if this class should implement a oneOf interface
+        interfaceImplementations[name]?.let { interfaceName ->
+            classBuilder.addSuperinterface(ClassName(packageName, interfaceName))
+        }
+        
         val constructor = FunSpec.constructorBuilder()
         val properties = schema.properties ?: emptyMap()
         
         properties.forEach { (propName, propSchema) ->
             val propertyName = propName.toCamelCase()
             val isRequired = schema.isPropertyRequired(propName)
-            val kotlinType = typeMapper.mapType(propSchema, !isRequired)
-            val typeName = kotlinType.toTypeName()
+            
+            // If property has enum values, use the generated enum type
+            val typeName = if (propSchema.enum != null && propSchema.type == SchemaType.STRING) {
+                val enumName = "${name}${propName.replaceFirstChar { it.uppercase() }}"
+                ClassName(packageName, enumName).copy(nullable = !isRequired)
+            } else {
+                val kotlinType = typeMapper.mapType(propSchema, !isRequired)
+                kotlinType.toTypeName()
+            }
             
             val parameter = ParameterSpec.builder(propertyName, typeName)
             
             // Add default value for optional properties
             if (!isRequired && config.generateDefaultValues) {
-                val defaultValue = typeMapper.getDefaultValue(kotlinType)
-                if (defaultValue != null) {
-                    parameter.defaultValue(defaultValue)
+                if (propSchema.enum != null) {
+                    // For enums, default to null
+                    parameter.defaultValue("null")
+                } else {
+                    val kotlinType = typeMapper.mapType(propSchema, !isRequired)
+                    val defaultValue = typeMapper.getDefaultValue(kotlinType)
+                    if (defaultValue != null) {
+                        parameter.defaultValue(defaultValue)
+                    }
                 }
             }
             

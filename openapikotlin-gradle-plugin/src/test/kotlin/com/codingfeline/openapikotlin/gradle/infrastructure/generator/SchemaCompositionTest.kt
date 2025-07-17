@@ -300,15 +300,25 @@ class SchemaCompositionTest {
         val schemas = domainSpec.components?.schemas ?: emptyMap()
         val models = generator.generateModels(schemas, "com.test.models")
         
+        // Debug: print all generated models
+        println("Nested allOf test - Generated ${models.size} models:")
+        models.forEach { model ->
+            println("Model: ${model.relativePath}")
+            if (model.relativePath.contains("Final")) {
+                println("Final model content:")
+                println(model.content)
+            }
+        }
+        
         val finalModel = models.find { it.writeToString().contains("class Final") }
-        assertNotNull(finalModel)
+        assertNotNull(finalModel, "Should find Final model")
         
         val content = finalModel.writeToString()
         
         // Should have all properties from all levels
-        assertTrue(content.contains("public val id: String"))
-        assertTrue(content.contains("public val name: String"))
-        assertTrue(content.contains("public val description: String"))
+        assertTrue(content.contains("public val id: String"), "Should contain id from Base")
+        assertTrue(content.contains("public val name: String"), "Should contain name from Middle")
+        assertTrue(content.contains("public val description: String"), "Should contain description from Final")
     }
     
     @Test
