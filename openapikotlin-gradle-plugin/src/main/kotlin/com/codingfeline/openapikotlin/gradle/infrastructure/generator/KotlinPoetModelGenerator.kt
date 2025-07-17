@@ -24,6 +24,20 @@ class KotlinPoetModelGenerator(
     private var allSchemas: Map<String, Schema> = emptyMap()
     private val interfaceImplementations = mutableMapOf<String, String>() // schema name -> interface name
     
+    companion object {
+        private val STRING = ClassName("kotlin", "String")
+        private val INT = ClassName("kotlin", "Int")
+        private val LONG = ClassName("kotlin", "Long")
+        private val FLOAT = ClassName("kotlin", "Float")
+        private val DOUBLE = ClassName("kotlin", "Double")
+        private val BOOLEAN = ClassName("kotlin", "Boolean")
+        private val ANY = ClassName("kotlin", "Any")
+        private val LIST = ClassName("kotlin.collections", "List")
+        private val MAP = ClassName("kotlin.collections", "Map")
+        private val INSTANT = ClassName("kotlinx.datetime", "Instant")
+        private val LOCAL_DATE = ClassName("kotlinx.datetime", "LocalDate")
+    }
+    
     override fun generateModels(schemas: Map<String, Schema>, packageName: String): List<GeneratedFile> {
         // Store all schemas for reference resolution
         allSchemas = schemas
@@ -46,8 +60,8 @@ class KotlinPoetModelGenerator(
         
         // Second pass: generate models
         schemas.forEach { (name, schema) ->
-            // Skip generating for references or primitives without enums
-            if (!schema.isReference() && !(schema.isPrimitive() && schema.enum == null)) {
+            // Skip generating for references
+            if (!schema.isReference()) {
                 models.add(generateModel(name, schema, packageName))
                 
                 // Also generate enums for properties with enum values
@@ -79,12 +93,50 @@ class KotlinPoetModelGenerator(
         // Handle schema composition
         val resolvedSchema = resolveSchemaComposition(schema, packageName)
         
+        // Check if this is a simple type that should be a type alias
+        val isSimpleType = resolvedSchema.enum == null && 
+                          resolvedSchema.properties == null && 
+                          resolvedSchema.oneOf == null && 
+                          resolvedSchema.anyOf == null
+        
+        if (isSimpleType) {
+            // Generate type alias for simple types
+            val kotlinType = when {
+                resolvedSchema.type == SchemaType.STRING && resolvedSchema.format == "date-time" -> INSTANT
+                resolvedSchema.type == SchemaType.STRING && resolvedSchema.format == "date" -> LOCAL_DATE
+                resolvedSchema.type == SchemaType.STRING -> STRING
+                resolvedSchema.type == SchemaType.INTEGER && resolvedSchema.format == "int64" -> LONG
+                resolvedSchema.type == SchemaType.INTEGER -> INT
+                resolvedSchema.type == SchemaType.NUMBER && resolvedSchema.format == "double" -> DOUBLE
+                resolvedSchema.type == SchemaType.NUMBER -> FLOAT
+                resolvedSchema.type == SchemaType.BOOLEAN -> BOOLEAN
+                resolvedSchema.type == SchemaType.ARRAY -> LIST.parameterizedBy(ANY)
+                resolvedSchema.type == SchemaType.OBJECT -> MAP.parameterizedBy(STRING, ANY)
+                else -> ANY
+            }.copy(nullable = resolvedSchema.nullable == true)
+            
+            val fileSpec = FileSpec.builder(packageName, name)
+                .addTypeAlias(TypeAliasSpec.builder(name, kotlinType).build())
+                .apply {
+                    if (kotlinType == INSTANT || kotlinType == LOCAL_DATE || 
+                        kotlinType.copy(nullable = false) == INSTANT || 
+                        kotlinType.copy(nullable = false) == LOCAL_DATE) {
+                        addImport("kotlinx.datetime", "Instant", "LocalDate")
+                    }
+                }
+                .build()
+            
+            val relativePath = PackageName(packageName).toPath() + "/$name.kt"
+            return GeneratedFile(relativePath, fileSpec.toString())
+        }
+        
+        // Generate regular type (enum, data class, interface, etc.)
         val typeSpec = when {
             resolvedSchema.enum != null -> generateEnumClass(name, resolvedSchema)
             resolvedSchema.properties != null -> generateDataClass(name, resolvedSchema, packageName)
             resolvedSchema.oneOf != null -> generateSealedInterface(name, resolvedSchema, packageName)
             resolvedSchema.anyOf != null -> generateAnyOfClass(name, resolvedSchema, packageName)
-            else -> generateTypeAlias(name, resolvedSchema)
+            else -> throw IllegalStateException("Unexpected schema type for $name")
         }
         
         val fileSpec = FileSpec.builder(packageName, name)
@@ -325,32 +377,6 @@ class KotlinPoetModelGenerator(
         return classBuilder.build()
     }
     
-    private fun generateTypeAlias(name: String, schema: Schema): TypeSpec {
-        // Map simple types to Kotlin types
-        val kotlinType = when {
-            schema.type == SchemaType.STRING && schema.format == "date-time" -> INSTANT
-            schema.type == SchemaType.STRING && schema.format == "date" -> LOCAL_DATE
-            schema.type == SchemaType.STRING -> STRING
-            schema.type == SchemaType.INTEGER && schema.format == "int64" -> LONG
-            schema.type == SchemaType.INTEGER -> INT
-            schema.type == SchemaType.NUMBER && schema.format == "double" -> DOUBLE
-            schema.type == SchemaType.NUMBER -> FLOAT
-            schema.type == SchemaType.BOOLEAN -> BOOLEAN
-            schema.type == SchemaType.ARRAY -> LIST.parameterizedBy(ANY)
-            schema.type == SchemaType.OBJECT -> MAP.parameterizedBy(STRING, ANY)
-            else -> ANY
-        }.copy(nullable = schema.nullable == true)
-        
-        // Generate a type alias
-        return TypeSpec.classBuilder(name)
-            .addAnnotation(
-                AnnotationSpec.builder(Suppress::class)
-                    .addMember("%S", "ClassName")
-                    .build()
-            )
-            .addKdoc("Type alias for ${schema.type ?: "unknown type"}")
-            .build()
-    }
     
     override fun generateClient(spec: OpenApiSpec, operations: List<OperationContext>, packageName: String): GeneratedFile {
         // Model generator doesn't generate clients
