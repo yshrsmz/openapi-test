@@ -60,6 +60,9 @@ class SpecialTypesGenerator {
         // Check if any special types are referenced in the spec
         val referencedTypes = mutableSetOf<String>()
         
+        // Get all defined schema names
+        val definedSchemaNames = spec.components?.schemas?.keys ?: emptySet()
+        
         // Check all schema references
         spec.paths.values.forEach { pathItem ->
             val operations = listOfNotNull(
@@ -73,7 +76,7 @@ class SpecialTypesGenerator {
                 operation.parameters?.forEach { param ->
                     param.schema?.`$ref`?.let { ref ->
                         val typeName = ref.substringAfterLast("/")
-                        if (typeName in specialTypes) {
+                        if (typeName in specialTypes && typeName !in definedSchemaNames) {
                             referencedTypes.add(typeName)
                         }
                     }
@@ -81,12 +84,12 @@ class SpecialTypesGenerator {
                 
                 // Check request/response bodies
                 operation.requestBody?.content?.values?.forEach { mediaType ->
-                    collectReferencedTypes(mediaType.schema, referencedTypes)
+                    collectReferencedTypes(mediaType.schema, referencedTypes, definedSchemaNames)
                 }
                 
                 operation.responses.values.forEach { response ->
                     response.content?.values?.forEach { mediaType ->
-                        collectReferencedTypes(mediaType.schema, referencedTypes)
+                        collectReferencedTypes(mediaType.schema, referencedTypes, definedSchemaNames)
                     }
                 }
             }
@@ -94,7 +97,7 @@ class SpecialTypesGenerator {
         
         // Check component schemas
         spec.components?.schemas?.values?.forEach { schema ->
-            collectReferencedTypes(schema, referencedTypes)
+            collectReferencedTypes(schema, referencedTypes, definedSchemaNames)
         }
         
         // Generate type aliases for referenced special types
@@ -122,24 +125,32 @@ class SpecialTypesGenerator {
         )
     }
     
-    private fun collectReferencedTypes(schema: com.codingfeline.openapikotlin.gradle.domain.model.Schema?, types: MutableSet<String>) {
+    private fun collectReferencedTypes(
+        schema: com.codingfeline.openapikotlin.gradle.domain.model.Schema?, 
+        types: MutableSet<String>,
+        definedSchemaNames: Set<String>
+    ) {
         if (schema == null) return
         
         schema.`$ref`?.let { ref ->
             val typeName = ref.substringAfterLast("/")
-            if (typeName in specialTypes) {
+            if (typeName in specialTypes && typeName !in definedSchemaNames) {
                 types.add(typeName)
             }
         }
         
-        schema.items?.let { collectReferencedTypes(it, types) }
-        schema.properties?.values?.forEach { collectReferencedTypes(it, types) }
-        schema.allOf?.forEach { collectReferencedTypes(it, types) }
-        schema.oneOf?.forEach { collectReferencedTypes(it, types) }
-        schema.anyOf?.forEach { collectReferencedTypes(it, types) }
+        schema.items?.let { collectReferencedTypes(it, types, definedSchemaNames) }
+        schema.properties?.values?.forEach { collectReferencedTypes(it, types, definedSchemaNames) }
+        schema.allOf?.forEach { collectReferencedTypes(it, types, definedSchemaNames) }
+        schema.oneOf?.forEach { collectReferencedTypes(it, types, definedSchemaNames) }
+        schema.anyOf?.forEach { collectReferencedTypes(it, types, definedSchemaNames) }
         
         if (schema.additionalProperties is com.codingfeline.openapikotlin.gradle.domain.model.Schema) {
-            collectReferencedTypes(schema.additionalProperties as com.codingfeline.openapikotlin.gradle.domain.model.Schema, types)
+            collectReferencedTypes(
+                schema.additionalProperties as com.codingfeline.openapikotlin.gradle.domain.model.Schema, 
+                types,
+                definedSchemaNames
+            )
         }
     }
 }

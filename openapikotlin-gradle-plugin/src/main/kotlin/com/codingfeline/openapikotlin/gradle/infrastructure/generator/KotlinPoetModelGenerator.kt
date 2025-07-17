@@ -210,17 +210,24 @@ class KotlinPoetModelGenerator(
             .addAnnotation(Serializable::class)
         
         schema.enum?.forEach { value ->
-            val enumName = value.toString()
-                .uppercase()
-                .replace("-", "_")
-                .replace(" ", "_")
+            val rawValue = value.toString()
+            val enumName = if (rawValue.isEmpty()) {
+                "EMPTY"
+            } else {
+                rawValue
+                    .uppercase()
+                    .replace("-", "_")
+                    .replace(" ", "_")
+                    .replace(".", "_")
+                    .let { if (it.first().isDigit()) "_$it" else it }
+            }
             
             enumBuilder.addEnumConstant(
                 enumName,
                 TypeSpec.anonymousClassBuilder()
                     .addAnnotation(
                         AnnotationSpec.builder(SerialName::class)
-                            .addMember("%S", value.toString())
+                            .addMember("%S", rawValue)
                             .build()
                     )
                     .build()
@@ -293,6 +300,18 @@ class KotlinPoetModelGenerator(
                     if (propSchema.description != null) {
                         addKdoc(propSchema.description)
                     }
+                    // Add override modifier if this property is defined in the interface
+                    interfaceImplementations[name]?.let { interfaceName ->
+                        // Check if the interface has this property
+                        val interfaceSchema = allSchemas[interfaceName]
+                        if (interfaceSchema?.properties?.containsKey(propName) == true) {
+                            addModifiers(KModifier.OVERRIDE)
+                        }
+                        // Also check if this is a discriminator property
+                        if (interfaceSchema?.discriminator?.propertyName == propName) {
+                            addModifiers(KModifier.OVERRIDE)
+                        }
+                    }
                     // SerialName annotation is already added to the constructor parameter
                     // No need to add it again to the property
                 }
@@ -307,9 +326,28 @@ class KotlinPoetModelGenerator(
     }
     
     private fun generateTypeAlias(name: String, schema: Schema): TypeSpec {
-        // For now, just create a simple wrapper class
+        // Map simple types to Kotlin types
+        val kotlinType = when {
+            schema.type == SchemaType.STRING && schema.format == "date-time" -> INSTANT
+            schema.type == SchemaType.STRING && schema.format == "date" -> LOCAL_DATE
+            schema.type == SchemaType.STRING -> STRING
+            schema.type == SchemaType.INTEGER && schema.format == "int64" -> LONG
+            schema.type == SchemaType.INTEGER -> INT
+            schema.type == SchemaType.NUMBER && schema.format == "double" -> DOUBLE
+            schema.type == SchemaType.NUMBER -> FLOAT
+            schema.type == SchemaType.BOOLEAN -> BOOLEAN
+            schema.type == SchemaType.ARRAY -> LIST.parameterizedBy(ANY)
+            schema.type == SchemaType.OBJECT -> MAP.parameterizedBy(STRING, ANY)
+            else -> ANY
+        }.copy(nullable = schema.nullable == true)
+        
+        // Generate a type alias
         return TypeSpec.classBuilder(name)
-            .addAnnotation(Serializable::class)
+            .addAnnotation(
+                AnnotationSpec.builder(Suppress::class)
+                    .addMember("%S", "ClassName")
+                    .build()
+            )
             .addKdoc("Type alias for ${schema.type ?: "unknown type"}")
             .build()
     }

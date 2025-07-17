@@ -5,7 +5,13 @@
       "Bash(find:*)",
       "Bash(mkdir:*)",
       "WebFetch(domain:raw.githubusercontent.com)",
-      "Bash(ls:*)"
+      "Bash(ls:*)",
+      "Bash(../gradlew generateOpenApiCode:*)",
+      "Bash(jq:*)",
+      "Bash(python3:*)",
+      "Bash(../gradlew clean:*)",
+      "Bash(../gradlew build)",
+      "Bash(rm:*)"
     ],
     "deny": []
   }
