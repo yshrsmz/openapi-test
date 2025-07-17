@@ -183,7 +183,7 @@ class RealWorldSpecsIntegrationTest {
         assertTrue(petModel != null, "Should generate Pet model")
         assertTrue(petModel.content.contains("data class Pet"), "Pet should be a data class")
         assertTrue(petModel.content.contains("val name: String"), "Pet should have required name property")
-        assertTrue(petModel.content.contains("val photourls: List<String>"), "Pet should have photoUrls property")
+        assertTrue(petModel.content.contains("val photoUrls: List<String>"), "Pet should have photoUrls property")
         
         // Generate client
         val clientGenerator = KotlinPoetClientGenerator(
