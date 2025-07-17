@@ -11,7 +11,9 @@
       "Bash(python3:*)",
       "Bash(../gradlew clean:*)",
       "Bash(../gradlew build)",
-      "Bash(rm:*)"
+      "Bash(rm:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
     ],
     "deny": []
   }

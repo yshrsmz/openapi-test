@@ -82,6 +82,9 @@ data class KotlinType(
         
         // Serialization types
         val JsonElement = KotlinType("JsonElement", "kotlinx.serialization.json")
+        val JsonObject = KotlinType("JsonObject", "kotlinx.serialization.json")
+        val JsonArray = KotlinType("JsonArray", "kotlinx.serialization.json")
+        val JsonPrimitive = KotlinType("JsonPrimitive", "kotlinx.serialization.json")
         
         // Collection factories
         fun List(elementType: KotlinType) = KotlinType("List", typeParameters = listOf(elementType))
