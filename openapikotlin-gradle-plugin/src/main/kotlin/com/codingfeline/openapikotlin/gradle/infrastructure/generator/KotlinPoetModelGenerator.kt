@@ -118,9 +118,8 @@ class KotlinPoetModelGenerator(
                           resolvedSchema.anyOf == null
         
         if (isSimpleType) {
-            // Use the type mapper to get the correct type
-            val typeMapper = KotlinPoetTypeMapper(packageName)
-            val mappedType = typeMapper.mapType(resolvedSchema, resolvedSchema.nullable ?: false)
+            // Use the existing type mapper with schema name
+            val mappedType = typeMapper.mapTypeWithName(resolvedSchema, resolvedSchema.nullable ?: false, name)
             
             // Convert KotlinType to TypeName for KotlinPoet
             val kotlinType = mappedType.toTypeName()

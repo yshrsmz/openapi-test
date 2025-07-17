@@ -24,8 +24,15 @@ class KotlinPoetTypeMapper(
     private val modelsPackage = PackageName(basePackage).append("models")
     
     override fun mapType(schema: Schema, nullable: Boolean): KotlinType {
+        return mapTypeWithName(schema, nullable, null)
+    }
+    
+    /**
+     * Maps a schema to a Kotlin type with an optional schema name for overrides
+     */
+    fun mapTypeWithName(schema: Schema, nullable: Boolean, schemaName: String?): KotlinType {
         // Check for schema type overrides first
-        schema.name?.let { name ->
+        schemaName?.let { name ->
             config.schemaTypeOverrides[name]?.let { override ->
                 return parseTypeOverride(override, nullable || schema.nullable)
             }
@@ -33,7 +40,7 @@ class KotlinPoetTypeMapper(
         
         // Handle untyped schemas
         if (schema.type == null && !schema.isReference()) {
-            return handleUntypedSchema(schema, nullable || schema.nullable)
+            return handleUntypedSchema(schema, nullable || schema.nullable, schemaName)
         }
         
         val baseType = when {
@@ -141,7 +148,7 @@ class KotlinPoetTypeMapper(
     /**
      * Handles schemas with no type definition
      */
-    private fun handleUntypedSchema(schema: Schema, nullable: Boolean): KotlinType {
+    private fun handleUntypedSchema(schema: Schema, nullable: Boolean, schemaName: String?): KotlinType {
         if (config.useJsonElementForDynamicTypes) {
             // Use smart type inference
             return inferDynamicType(schema).let {
@@ -156,12 +163,12 @@ class KotlinPoetTypeMapper(
                 
                 DynamicTypeHandling.WARN -> {
                     logger.warn("""
-                        Schema '${schema.name ?: "unnamed"}' has no type definition and will be mapped to 'Any'.
+                        Schema '${schemaName ?: "unnamed"}' has no type definition and will be mapped to 'Any'.
                         This will fail at runtime with: "Serializer has not been found for type 'Any'"
                         
                         To fix this, either:
                         1. Set useJsonElementForDynamicTypes = true in your build.gradle.kts
-                        2. Add a type override: schemaTypeOverrides["${schema.name}"] = "JsonElement"
+                        2. Add a type override: schemaTypeOverrides["${schemaName}"] = "JsonElement"
                         3. Fix the OpenAPI specification to include a type
                     """.trimIndent())
                     return if (nullable) KotlinType.Any.nullable() else KotlinType.Any
@@ -169,13 +176,13 @@ class KotlinPoetTypeMapper(
                 
                 DynamicTypeHandling.FAIL -> {
                     throw IllegalStateException("""
-                        Schema '${schema.name ?: "unnamed"}' has no type definition.
+                        Schema '${schemaName ?: "unnamed"}' has no type definition.
                         
                         The generated code would fail at runtime with: "Serializer has not been found for type 'Any'"
                         
                         To fix this, either:
                         1. Set useJsonElementForDynamicTypes = true in your build.gradle.kts
-                        2. Add a type override: schemaTypeOverrides["${schema.name}"] = "JsonElement"
+                        2. Add a type override: schemaTypeOverrides["${schemaName}"] = "JsonElement"
                         3. Fix the OpenAPI specification to include a type
                     """.trimIndent())
                 }
