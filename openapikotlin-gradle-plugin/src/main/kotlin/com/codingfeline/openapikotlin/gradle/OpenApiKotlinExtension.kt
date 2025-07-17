@@ -69,8 +69,31 @@ data class ModelsConfig(
     var generateDataAnnotations: Boolean = true,
     var generateDefaultValues: Boolean = true,
     var useKotlinxDatetime: Boolean = true,
-    var generateValidation: Boolean = false
+    var generateValidation: Boolean = false,
+    var useJsonElementForDynamicTypes: Boolean = false,
+    var dynamicTypeHandling: DynamicTypeHandling = DynamicTypeHandling.WARN,
+    var schemaTypeOverrides: Map<String, String> = emptyMap()
 ) : java.io.Serializable
+
+/**
+ * How to handle dynamic/untyped schemas when useJsonElementForDynamicTypes is false
+ */
+enum class DynamicTypeHandling {
+    /**
+     * Generate Any type (will fail at runtime)
+     */
+    ALLOW,
+    
+    /**
+     * Generate Any type with warning about runtime failure
+     */
+    WARN,
+    
+    /**
+     * Fail code generation with helpful error message
+     */
+    FAIL
+}
 
 /**
  * Client generation configuration
