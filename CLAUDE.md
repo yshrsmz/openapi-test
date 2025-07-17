@@ -6,11 +6,21 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This is a Kotlin-based Gradle plugin that generates type-safe Kotlin code from OpenAPI specifications. It follows clean architecture principles and uses KotlinPoet for code generation. The project uses a multi-module structure with shared build logic extracted to convention plugins in `buildSrc`.
 
+## Important Notes on Dynamic Types
+
+When working with OpenAPI specs that have schemas without type definitions (like Ory's `identityTraits`), the plugin supports dynamic type handling:
+
+- **Default behavior**: Maps to `Any` with warnings (will fail at runtime with kotlinx.serialization)
+- **Recommended**: Enable `useJsonElementForDynamicTypes = true` in ModelsConfig
+- **Smart inference**: Automatically uses JsonObject for object-like schemas, JsonArray for arrays
+- **Override support**: Use `schemaTypeOverrides` map for specific schemas
+
 ## Current Status
 
-- **42 tests**: 41 passing, 1 skipped
+- **51 tests**: 50 passing, 1 skipped
 - Successfully generates code for complex real-world APIs (Petstore, Ory)
 - All major features implemented except "separate clients by tags"
+- Dynamic schema handling implemented with JsonElement support
 
 ## Key Build Commands
 
@@ -33,9 +43,10 @@ This is a Kotlin-based Gradle plugin that generates type-safe Kotlin code from O
   - Plugin ID: `com.codingfeline.openapi`
   - Clean architecture with domain, application, and infrastructure layers
   - Uses KotlinPoet for code generation
-- **example**: Example project demonstrating plugin usage
-  - Uses Ory API spec as example
-  - Shows configuration options
+- **openapikotlin-runtime**: Runtime library with OAuth2 client and serializers
+- **example-simple-api**: Simple example with dynamic Config type
+- **example-petstore**: Classic Swagger Petstore example
+- **example-ory-client**: Complex example with 400+ models including dynamic types
 - **openapi**: Contains test OpenAPI specifications
 
 ### Build Configuration
@@ -76,3 +87,13 @@ This is a Kotlin-based Gradle plugin that generates type-safe Kotlin code from O
 - Special types for undefined types (NullUUID, Time, etc.)
 - Smart import management
 - Comprehensive type mapping
+- Dynamic schema handling with JsonElement/JsonObject/JsonArray
+- Configurable behavior for untyped schemas (ALLOW/WARN/FAIL)
+- Schema type overrides for fine-grained control
+
+## Key Files for Dynamic Schema Handling
+
+- **KotlinPoetTypeMapper.kt**: Core type mapping logic with dynamic type support
+- **OpenApiKotlinExtension.kt**: Configuration classes including ModelsConfig
+- **KotlinType.kt**: Domain value object with JsonElement/JsonObject/JsonArray types
+- **DynamicSchemaHandlingTest.kt**: Comprehensive test suite for the feature
