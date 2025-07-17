@@ -8,6 +8,7 @@ buildscript {
 plugins {
     id("buildsrc.convention.kotlin-jvm")
     id("com.codingfeline.openapi") version "1.0.0-SNAPSHOT"
+    kotlin("plugin.serialization") version "2.1.21"
     application
 }
 

@@ -148,6 +148,7 @@ openApiKotlin {
 4. **CamelCase Fix**: Improved property name handling
 
 ## Known Issues
+- **List/Array Response Deserialization**: Generated code using `.body<List<T>>()` fails at runtime due to JVM type erasure. Ktor + kotlinx.serialization cannot resolve serializers for generic collection types. Workaround: Use manual deserialization with `Json.decodeFromString<List<T>>()`.
 - anyOf implementation is basic and could use custom serializers
 - No support for XML content types
 - No support for webhooks/callbacks

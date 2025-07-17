@@ -86,17 +86,37 @@ While the generated code includes auth helpers, the example doesn't implement fu
 
 ## Known Issues
 
-When running the example, you may encounter a serialization error for list responses:
+### List Serialization Error
+
+When running the example, you may encounter this error for endpoints returning arrays:
 ```
 Serializer for class 'List' is not found
 ```
 
-This is a known limitation with Ktor 3.x and kotlinx.serialization when dealing with generic types like `List<T>`. The generated code is correct, but hits a runtime limitation. Workarounds include:
-- Using wrapper classes for list responses
-- Manual deserialization with Json.decodeFromString
-- Using a different HTTP client library
+**Technical Explanation**: This occurs because of JVM type erasure. When the generated code calls `.body<List<Pet>>()`, Ktor can only see `List` at runtime, not `List<Pet>`. The kotlinx.serialization library needs the full type information (including generic parameters) to find the correct serializer, but this information is lost due to type erasure.
 
-Despite this issue, the example demonstrates successful code generation and compilation for all Petstore API endpoints.
+**Why it happens**:
+1. The generated code uses Ktor's `body<T>()` function with a reified type parameter
+2. For `List<Pet>`, only `List::class` is available at runtime (the `Pet` part is erased)
+3. kotlinx.serialization can't find a serializer for raw `List` type
+4. Single objects like `body<Pet>()` work fine because there's no generic type parameter
+
+**Workarounds**:
+1. **Manual deserialization** (modify the generated code):
+   ```kotlin
+   val jsonString = response.bodyAsText()
+   Json.decodeFromString<List<Pet>>(jsonString)
+   ```
+
+2. **Wrapper classes** for list responses:
+   ```kotlin
+   @Serializable
+   data class PetList(val items: List<Pet>)
+   ```
+
+3. **Future fix**: The code generator could be enhanced to use Ktor's `call.receive<T>(typeInfo)` API or implement manual deserialization for collection types.
+
+Despite this runtime issue, the example successfully demonstrates code generation and compilation for all Petstore API endpoints.
 
 ## Next Steps
 
