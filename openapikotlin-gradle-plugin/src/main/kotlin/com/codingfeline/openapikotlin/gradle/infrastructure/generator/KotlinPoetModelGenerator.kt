@@ -310,8 +310,17 @@ class KotlinPoetModelGenerator(
             val propertyName = propName.toCamelCase()
             val isRequired = schema.isPropertyRequired(propName)
             
-            // If property has enum values, use the generated enum type
-            val typeName = if (propSchema.enum != null && propSchema.type == SchemaType.STRING) {
+            // Check if this is a discriminator property that needs to use String type
+            val isDiscriminatorProperty = interfaceImplementations[name]?.let { interfaceName ->
+                val interfaceSchema = allSchemas[interfaceName]
+                interfaceSchema?.discriminator?.propertyName == propName
+            } ?: false
+            
+            // If property has enum values, use the generated enum type (unless it's a discriminator)
+            val typeName = if (isDiscriminatorProperty) {
+                // Discriminator properties must be String to match the interface
+                STRING.copy(nullable = !isRequired)
+            } else if (propSchema.enum != null && propSchema.type == SchemaType.STRING) {
                 val enumName = "${name}${propName.replaceFirstChar { it.uppercase() }}"
                 ClassName(packageName, enumName).copy(nullable = !isRequired)
             } else {

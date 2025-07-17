@@ -36,12 +36,14 @@ object Example {
             val oauth2Config = OAuth2Config(
                 clientId = "your-client-id",
                 clientSecret = "your-client-secret",
-                authorizationUrl = "https://auth.example.com/oauth2/auth",
-                tokenUrl = "https://auth.example.com/oauth2/token",
+                authorizationEndpoint = "https://auth.example.com/oauth2/auth",
+                tokenEndpoint = "https://auth.example.com/oauth2/token",
                 redirectUri = "http://localhost:8080/callback"
             )
             
-            val oauth2Client = OAuth2Client(
+            // OAuth2Client is a companion object, not a class
+            // Use it to create an OAuth2-enabled HTTP client
+            val oauth2HttpClient = OAuth2Client.create(
                 config = oauth2Config,
                 httpClient = httpClient,
                 tokenManager = tokenManager
