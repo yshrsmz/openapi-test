@@ -80,6 +80,9 @@ data class KotlinType(
         val LocalDate = KotlinType("LocalDate", "kotlinx.datetime")
         val LocalDateTime = KotlinType("LocalDateTime", "kotlinx.datetime")
         
+        // Serialization types
+        val JsonElement = KotlinType("JsonElement", "kotlinx.serialization.json")
+        
         // Collection factories
         fun List(elementType: KotlinType) = KotlinType("List", typeParameters = listOf(elementType))
         fun Set(elementType: KotlinType) = KotlinType("Set", typeParameters = listOf(elementType))

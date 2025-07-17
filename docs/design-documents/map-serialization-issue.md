@@ -2,8 +2,9 @@
 
 **Author**: OpenAPI Kotlin Team  
 **Date**: January 2025  
-**Status**: Problem Analysis & Proposed Solution  
-**Issue**: Generic Map types fail to serialize/deserialize at runtime
+**Status**: Phase 1 Implemented, Phase 2 Pending  
+**Issue**: Generic Map types fail to serialize/deserialize at runtime  
+**Update**: Code generation fix has been implemented and tested
 
 ## Executive Summary
 
@@ -111,42 +112,35 @@ Lists work because:
 
 ## Proposed Solutions
 
-### Solution 1: Fix Code Generation (Immediate)
+### Solution 1: Fix Code Generation (✅ IMPLEMENTED)
 
-#### Changes Required
+#### Implementation Details
 
-1. **Update Domain Model**:
+The fix was implemented without changing the domain model structure. Instead, the type checking in `KotlinPoetTypeMapper` was updated to properly handle the `additionalProperties` field:
+
+**Actual Implementation**:
 ```kotlin
-data class Schema(
-    val additionalProperties: AdditionalProperties? = null,
-    // ...
-)
-
-sealed class AdditionalProperties {
-    object BooleanValue : AdditionalProperties()
-    data class SchemaValue(val schema: Schema) : AdditionalProperties()
+// In KotlinPoetTypeMapper.mapType()
+schema.isObject() -> {
+    // Check if this is a Map type (object with additionalProperties)
+    if (schema.properties.isNullOrEmpty() && schema.additionalProperties != null) {
+        // additionalProperties can be a boolean or a Schema
+        val valueType = when (val additionalProps = schema.additionalProperties) {
+            is Boolean -> KotlinType.Any
+            is Schema -> mapType(additionalProps, false)  // Now works correctly!
+            else -> KotlinType.Any
+        }
+        KotlinType.Map(KotlinType.String, valueType)
+    }
+    // ... rest of the logic
 }
 ```
 
-2. **Update Parser**:
-```kotlin
-additionalProperties = when (val ap = schema.additionalProperties) {
-    is Boolean -> if (ap) AdditionalProperties.BooleanValue else null
-    is io.swagger.v3.oas.models.media.Schema<*> -> 
-        AdditionalProperties.SchemaValue(mapSchema(ap))
-    else -> null
-}
-```
+**Test Coverage**: Added `MapTypeGenerationTest` with test cases:
+- Object with typed additionalProperties → `Map<String, Int>`
+- Object with boolean additionalProperties → `Map<String, Any>`
 
-3. **Update Type Mapper**:
-```kotlin
-when (val additionalProps = schema.additionalProperties) {
-    is AdditionalProperties.BooleanValue -> KotlinType.Any
-    is AdditionalProperties.SchemaValue -> 
-        mapType(additionalProps.schema, false)
-    null -> KotlinType.Any
-}
-```
+**Result**: The Petstore `getInventory()` method now correctly generates as `Map<String, Int>` instead of `Map<String, Any>`.
 
 ### Solution 2: Handle Map Deserialization (Medium-term)
 
@@ -205,11 +199,11 @@ Consider supporting multiple serialization libraries:
 
 ## Implementation Plan
 
-### Phase 1: Fix Type Generation (1-2 days)
-1. Update domain model to use sealed class for additionalProperties
-2. Update parser to map to new domain model
-3. Update type mapper to handle new structure
-4. Add tests for Map type generation
+### Phase 1: Fix Type Generation (✅ COMPLETED)
+1. ✅ Updated type mapper to properly handle additionalProperties
+2. ✅ Maintained backward compatibility by keeping domain model unchanged
+3. ✅ Added MapTypeGenerationTest with comprehensive test cases
+4. ✅ Verified fix with Petstore API example
 
 ### Phase 2: Runtime Serialization (3-5 days)
 1. Detect Map return types in client generator
@@ -283,11 +277,22 @@ Consider supporting multiple serialization libraries:
 3. **Performance**: < 10% overhead vs current implementation
 4. **Developer Experience**: Clear error messages, easy configuration
 
+## Current Status
+
+### What's Fixed
+- ✅ **Type Generation**: Maps now generate with correct typed parameters (e.g., `Map<String, Int>` instead of `Map<String, Any>`)
+- ✅ **Test Coverage**: Comprehensive tests added for Map type generation
+- ✅ **Backward Compatibility**: Fix implemented without breaking changes to domain model
+
+### What Remains
+- ❌ **Runtime Deserialization**: Generated code still fails at runtime with "Serializer for class 'Map' is not found"
+- ❌ **List Handling**: While Lists work with the serialization plugin, they could benefit from the same manual deserialization approach for consistency
+
 ## Conclusion
 
-The Map serialization issue stems from both a code generation bug and fundamental limitations of Ktor + kotlinx.serialization with generic types. The proposed phased approach addresses both issues while maintaining backwards compatibility and providing flexibility for different use cases.
+Phase 1 of the Map serialization fix has been successfully implemented. The code generator now correctly identifies and generates proper Map types from OpenAPI specifications with `additionalProperties`. 
 
-The immediate priority is fixing the type generation bug (Phase 1), followed by implementing robust Map deserialization (Phase 2). This will ensure the OpenAPI Kotlin generator can handle all common OpenAPI patterns reliably.
+However, the runtime serialization issue (Phase 2) remains due to fundamental limitations of Ktor + kotlinx.serialization with generic types. The next priority is implementing manual deserialization for Map types (and potentially all collection types) to ensure reliable runtime behavior.
 
 ## References
 

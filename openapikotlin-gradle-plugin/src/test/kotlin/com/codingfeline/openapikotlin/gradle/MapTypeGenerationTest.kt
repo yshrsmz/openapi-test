@@ -34,10 +34,10 @@ class MapTypeGenerationTest {
     }
     
     @Test
-    fun `test object with boolean additionalProperties generates Map of Any`() {
+    fun `test object with boolean true additionalProperties generates Map of JsonElement`() {
         val typeMapper = KotlinPoetTypeMapper("com.example")
         
-        // Create object schema with boolean additionalProperties
+        // Create object schema with additionalProperties = true
         val mapSchema = Schema(
             type = SchemaType.OBJECT,
             properties = null,
@@ -49,6 +49,24 @@ class MapTypeGenerationTest {
         assertEquals("Map", result.simpleName)
         assertEquals(2, result.typeParameters.size)
         assertEquals("String", result.typeParameters[0].simpleName)
-        assertEquals("Any", result.typeParameters[1].simpleName)
+        assertEquals("JsonElement", result.typeParameters[1].simpleName)
+        assertEquals("kotlinx.serialization.json", result.typeParameters[1].packageName)
+    }
+    
+    @Test
+    fun `test object with boolean false additionalProperties generates regular object`() {
+        val typeMapper = KotlinPoetTypeMapper("com.example")
+        
+        // Create object schema with additionalProperties = false
+        val mapSchema = Schema(
+            type = SchemaType.OBJECT,
+            properties = null,
+            additionalProperties = false
+        )
+        
+        val result = typeMapper.mapType(mapSchema, false)
+        
+        // Should not generate a Map when additionalProperties is false
+        assertEquals("Any", result.simpleName)
     }
 }

@@ -23,14 +23,23 @@ class KotlinPoetTypeMapper(val basePackage: String) : TypeMappingService {
                 if (schema.properties.isNullOrEmpty() && schema.additionalProperties != null) {
                     // additionalProperties can be a boolean or a Schema
                     val valueType = when (val additionalProps = schema.additionalProperties) {
-                        is Boolean -> KotlinType.Any
+                        is Boolean -> if (additionalProps) {
+                            KotlinType.JsonElement  // Use JsonElement for dynamic values
+                        } else {
+                            null  // additionalProperties: false means no additional properties
+                        }
                         is Schema -> mapType(additionalProps, false)
-                        else -> KotlinType.Any
+                        else -> KotlinType.JsonElement
                     }
-                    KotlinType.Map(KotlinType.String, valueType)
+                    if (valueType != null) {
+                        KotlinType.Map(KotlinType.String, valueType)
+                    } else {
+                        // No additional properties allowed, treat as regular object
+                        KotlinType.Any
+                    }
                 } else if (schema.properties.isNullOrEmpty()) {
-                    // Simple object without properties, use Map<String, Any>
-                    KotlinType.Map(KotlinType.String, KotlinType.Any)
+                    // Simple object without properties, use Map<String, JsonElement>
+                    KotlinType.Map(KotlinType.String, KotlinType.JsonElement)
                 } else {
                     // Otherwise, it should be a named type
                     KotlinType.Any

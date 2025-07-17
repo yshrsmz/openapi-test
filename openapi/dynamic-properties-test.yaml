@@ -1,0 +1,38 @@
+openapi: 3.0.0
+info:
+  title: Dynamic Properties Test API
+  version: 1.0.0
+paths:
+  /config:
+    get:
+      operationId: getConfig
+      summary: Get configuration with dynamic properties
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Config'
+components:
+  schemas:
+    Config:
+      type: object
+      properties:
+        name:
+          type: string
+        version:
+          type: string
+      additionalProperties: true  # Allow any additional properties
+    
+    Metadata:
+      type: object
+      additionalProperties:  # Map with integer values
+        type: integer
+        
+    Restricted:
+      type: object
+      properties:
+        id:
+          type: string
+      additionalProperties: false  # No additional properties allowed

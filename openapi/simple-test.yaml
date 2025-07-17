@@ -52,3 +52,7 @@ components:
         email:
           type: string
           description: User email
+    Config:
+      type: object
+      description: Configuration object with dynamic properties
+      additionalProperties: true

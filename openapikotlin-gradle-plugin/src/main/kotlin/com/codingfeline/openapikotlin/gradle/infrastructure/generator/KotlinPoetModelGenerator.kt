@@ -118,20 +118,12 @@ class KotlinPoetModelGenerator(
                           resolvedSchema.anyOf == null
         
         if (isSimpleType) {
-            // Generate type alias for simple types
-            val kotlinType = when {
-                resolvedSchema.type == SchemaType.STRING && resolvedSchema.format == "date-time" -> INSTANT
-                resolvedSchema.type == SchemaType.STRING && resolvedSchema.format == "date" -> LOCAL_DATE
-                resolvedSchema.type == SchemaType.STRING -> STRING
-                resolvedSchema.type == SchemaType.INTEGER && resolvedSchema.format == "int64" -> LONG
-                resolvedSchema.type == SchemaType.INTEGER -> INT
-                resolvedSchema.type == SchemaType.NUMBER && resolvedSchema.format == "double" -> DOUBLE
-                resolvedSchema.type == SchemaType.NUMBER -> FLOAT
-                resolvedSchema.type == SchemaType.BOOLEAN -> BOOLEAN
-                resolvedSchema.type == SchemaType.ARRAY -> LIST.parameterizedBy(ANY)
-                resolvedSchema.type == SchemaType.OBJECT -> MAP.parameterizedBy(STRING, ANY)
-                else -> ANY
-            }.copy(nullable = resolvedSchema.nullable == true)
+            // Use the type mapper to get the correct type
+            val typeMapper = KotlinPoetTypeMapper(packageName)
+            val mappedType = typeMapper.mapType(resolvedSchema, resolvedSchema.nullable ?: false)
+            
+            // Convert KotlinType to TypeName for KotlinPoet
+            val kotlinType = mappedType.toTypeName()
             
             // Use the original name for the type alias to maintain compatibility
             val fileSpec = FileSpec.builder(packageName, name)
