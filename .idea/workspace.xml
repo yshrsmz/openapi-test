@@ -5,13 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a02cdbe5-ba4a-42c4-a503-e2bf275a7bcc" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.devcontainer/devcontainer.json" beforeDir="false" afterPath="$PROJECT_DIR$/.devcontainer/devcontainer.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PROJECT_STATUS.md" beforeDir="false" afterPath="$PROJECT_DIR$/PROJECT_STATUS.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/example-ory-client/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/example-ory-client/build.gradle.kts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/example-petstore/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/example-petstore/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/example-petstore/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/example-petstore/build.gradle.kts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/example-simple-api/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/example-simple-api/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/openapikotlin-gradle-plugin/src/main/kotlin/com/codingfeline/openapikotlin/gradle/infrastructure/generator/KotlinPoetTypeMapper.kt" beforeDir="false" afterPath="$PROJECT_DIR$/openapikotlin-gradle-plugin/src/main/kotlin/com/codingfeline/openapikotlin/gradle/infrastructure/generator/KotlinPoetTypeMapper.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/openapikotlin-gradle-plugin/src/main/kotlin/com/codingfeline/openapikotlin/gradle/infrastructure/parser/SwaggerParserAdapter.kt" beforeDir="false" afterPath="$PROJECT_DIR$/openapikotlin-gradle-plugin/src/main/kotlin/com/codingfeline/openapikotlin/gradle/infrastructure/parser/SwaggerParserAdapter.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,12 +34,29 @@
         <task path="$PROJECT_DIR$/example-petstore">
           <activation />
         </task>
+        <task path="$PROJECT_DIR$/example-simple-api">
+          <activation />
+        </task>
+        <task path="$PROJECT_DIR$/example-ory-client">
+          <activation />
+        </task>
         <projects_view>
           <tree_state>
             <expand>
               <path>
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
                 <item name="openapi-test" type="f1a62948:ProjectNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="openapi-test" type="f1a62948:ProjectNode" />
+                <item name="example-ory-client" type="2d1252cf:ModuleNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="openapi-test" type="f1a62948:ProjectNode" />
+                <item name="example-ory-client" type="2d1252cf:ModuleNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
               </path>
               <path>
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
@@ -57,6 +73,24 @@
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
                 <item name="openapi-test" type="f1a62948:ProjectNode" />
                 <item name="example-petstore" type="2d1252cf:ModuleNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="application" type="c8890929:TasksNode$1" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="openapi-test" type="f1a62948:ProjectNode" />
+                <item name="example-simple-api" type="2d1252cf:ModuleNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="openapi-test" type="f1a62948:ProjectNode" />
+                <item name="example-simple-api" type="2d1252cf:ModuleNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="openapi-test" type="f1a62948:ProjectNode" />
+                <item name="example-simple-api" type="2d1252cf:ModuleNode" />
                 <item name="Tasks" type="e4a08cd1:TasksNode" />
                 <item name="application" type="c8890929:TasksNode$1" />
               </path>
@@ -138,6 +172,7 @@
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
     &quot;Gradle.openapi-test:example-petstore [run].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.openapi-test:example-simple-api [run].executor&quot;: &quot;Run&quot;,
     &quot;Gradle.openapi-test:openapikotlin-gradle-plugin [build].executor&quot;: &quot;Run&quot;,
     &quot;Gradle.openapi-test:openapikotlin-gradle-plugin [publishToMavenLocal].executor&quot;: &quot;Run&quot;,
     &quot;Gradle.openapi-test:openapikotlin-runtime [build].executor&quot;: &quot;Run&quot;,
@@ -163,7 +198,7 @@
       <window_info id="Commit_Guest" show_stripe_button="false" />
       <window_info id="Pull Requests" />
       <window_info id="Learn" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.1534242" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.18027344" />
       <window_info id="Commit" order="1" weight="0.25" />
       <window_info id="Structure" order="2" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Database Changes" />
@@ -175,7 +210,7 @@
       <window_info anchor="bottom" id="Version Control" order="0" />
       <window_info anchor="bottom" id="Problems" order="1" />
       <window_info anchor="bottom" id="Problems View" order="2" weight="0.33023393" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="3" visible="true" weight="0.33023393" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="3" visible="true" weight="0.38904595" />
       <window_info anchor="bottom" id="Services" order="4" />
       <window_info anchor="bottom" id="Build" order="5" weight="0.33023393" />
       <window_info anchor="bottom" id="Run" order="6" weight="0.33023393" />
@@ -184,15 +219,37 @@
       <window_info anchor="right" content_ui="combo" id="Notifications" order="0" weight="0.25" />
       <window_info anchor="right" id="AIAssistant" order="1" weight="0.25" />
       <window_info anchor="right" id="Database" order="2" weight="0.25" />
-      <window_info active="true" anchor="right" id="Gradle" order="3" visible="true" weight="0.32995343" />
+      <window_info active="true" anchor="right" id="Gradle" order="3" visible="true" weight="0.10292968" />
       <window_info anchor="right" id="Maven" order="4" weight="0.25" />
     </layout>
   </component>
-  <component name="RunManager" selected="Gradle.openapi-test:example-petstore [run]">
+  <component name="RunManager" selected="Gradle.openapi-test:example-simple-api [run]">
     <configuration name="openapi-test:example-petstore [run]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$/example-petstore" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="run" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="openapi-test:example-simple-api [run]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/example-simple-api" />
         <option name="externalSystemIdString" value="GRADLE" />
         <option name="scriptParameters" />
         <option name="taskDescriptions">
@@ -255,28 +312,6 @@
       <RunAsTest>false</RunAsTest>
       <method v="2" />
     </configuration>
-    <configuration name="openapi-test:openapikotlin-runtime [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$/openapikotlin-runtime" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value="build" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <RunAsTest>false</RunAsTest>
-      <method v="2" />
-    </configuration>
     <configuration name="openapi-test:openapikotlin-runtime [publishToMavenLocal]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -301,11 +336,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Gradle.openapi-test:example-simple-api [run]" />
         <item itemvalue="Gradle.openapi-test:example-petstore [run]" />
         <item itemvalue="Gradle.openapi-test:openapikotlin-gradle-plugin [publishToMavenLocal]" />
         <item itemvalue="Gradle.openapi-test:openapikotlin-runtime [publishToMavenLocal]" />
         <item itemvalue="Gradle.openapi-test:openapikotlin-gradle-plugin [build]" />
-        <item itemvalue="Gradle.openapi-test:openapikotlin-runtime [build]" />
       </list>
     </recent_temporary>
   </component>

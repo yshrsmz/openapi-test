@@ -24,6 +24,9 @@ dependencies {
     implementation("io.ktor:ktor-client-cio:3.2.2")
     implementation("io.ktor:ktor-client-content-negotiation:3.2.2")
     implementation("io.ktor:ktor-serialization-kotlinx-json:3.2.2")
+    
+    // Logging - using nop to avoid warnings
+    implementation("org.slf4j:slf4j-nop:2.0.9")
 }
 
 // OpenAPI plugin configuration

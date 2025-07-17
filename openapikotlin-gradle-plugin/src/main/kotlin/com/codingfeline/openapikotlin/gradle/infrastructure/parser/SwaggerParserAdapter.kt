@@ -192,7 +192,10 @@ class SwaggerParserAdapter : OpenApiParser {
             properties = schema.properties?.mapValues { (_, prop) -> 
                 mapSchema(prop) 
             },
-            additionalProperties = schema.additionalProperties,
+            additionalProperties = when (val ap = schema.additionalProperties) {
+                is io.swagger.v3.oas.models.media.Schema<*> -> mapSchema(ap)
+                else -> ap // Boolean or null
+            },
             items = (schema as? io.swagger.v3.oas.models.media.ArraySchema)?.items?.let { 
                 mapSchema(it) 
             },

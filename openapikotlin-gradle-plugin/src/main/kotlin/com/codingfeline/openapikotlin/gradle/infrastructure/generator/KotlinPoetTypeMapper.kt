@@ -19,8 +19,17 @@ class KotlinPoetTypeMapper(val basePackage: String) : TypeMappingService {
             schema.isArray() -> mapArrayType(schema.items!!, false)
             schema.isPrimitive() -> mapPrimitiveType(schema.type!!, schema.format, false)
             schema.isObject() -> {
-                // If it's a simple object without properties, use Map
-                if (schema.properties.isNullOrEmpty()) {
+                // Check if this is a Map type (object with additionalProperties)
+                if (schema.properties.isNullOrEmpty() && schema.additionalProperties != null) {
+                    // additionalProperties can be a boolean or a Schema
+                    val valueType = when (val additionalProps = schema.additionalProperties) {
+                        is Boolean -> KotlinType.Any
+                        is Schema -> mapType(additionalProps, false)
+                        else -> KotlinType.Any
+                    }
+                    KotlinType.Map(KotlinType.String, valueType)
+                } else if (schema.properties.isNullOrEmpty()) {
+                    // Simple object without properties, use Map<String, Any>
                     KotlinType.Map(KotlinType.String, KotlinType.Any)
                 } else {
                     // Otherwise, it should be a named type

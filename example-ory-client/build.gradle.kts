@@ -23,6 +23,9 @@ dependencies {
     // Ktor client engine for runtime
     implementation("io.ktor:ktor-client-cio:3.2.2")
     
+    // Logging - using nop to avoid warnings
+    implementation("org.slf4j:slf4j-nop:2.0.9")
+    
     // For testing generated code
     testImplementation("io.ktor:ktor-client-mock:3.2.2")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0")
