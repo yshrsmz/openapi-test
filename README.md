@@ -11,6 +11,7 @@ A Gradle plugin that generates Kotlin code from OpenAPI 3.0/3.1 specifications. 
 - 🔧 **Highly Configurable** - Extensive configuration options for generated code
 - ⚡ **Ktor Integration** - Uses Ktor HTTP client for networking
 - 📝 **Comprehensive Validation** - Validates models based on OpenAPI constraints
+- 🔄 **Dynamic Type Support** - Handle untyped/dynamic schemas with kotlinx.serialization.json
 
 ## Project Structure
 
@@ -77,6 +78,7 @@ openApiKotlin {
         generateDataAnnotations = true
         generateDefaultValues = true
         generateValidation = true
+        useJsonElementForDynamicTypes = false  // Enable to handle untyped schemas
     }
     
     // Client generation options
@@ -92,6 +94,97 @@ openApiKotlin {
 
 ```bash
 ./gradlew generateOpenApiCode
+```
+
+## Dynamic Type Handling
+
+Some OpenAPI specifications include schemas without explicit type definitions, which are meant to accept any JSON value. By default, these are mapped to Kotlin's `Any` type, which causes runtime serialization errors with kotlinx.serialization.
+
+### The Problem
+
+```yaml
+# OpenAPI schema with no type - accepts any JSON
+identityTraits:
+  description: "Dynamic user traits"
+```
+
+Generated code (default):
+```kotlin
+public typealias identityTraits = Any  // ❌ Fails at runtime!
+```
+
+### The Solution
+
+Enable dynamic type support to use `JsonElement` from kotlinx.serialization:
+
+```kotlin
+openApiKotlin {
+    models {
+        useJsonElementForDynamicTypes = true  // ✅ Enables safe dynamic types
+    }
+}
+```
+
+Generated code (with feature enabled):
+```kotlin
+public typealias identityTraits = JsonElement  // ✅ Works at runtime!
+```
+
+### Configuration Options
+
+```kotlin
+models {
+    // Enable JsonElement for all untyped schemas
+    useJsonElementForDynamicTypes = true
+    
+    // Control behavior when disabled (default: WARN)
+    dynamicTypeHandling = DynamicTypeHandling.FAIL  // ALLOW, WARN, or FAIL
+    
+    // Override specific schemas
+    schemaTypeOverrides = mapOf(
+        "identityTraits" to "JsonElement",
+        "metadata" to "JsonObject",
+        "tags" to "JsonArray",
+        "customData" to "com.example.CustomType"
+    )
+}
+```
+
+### Smart Type Inference
+
+When `useJsonElementForDynamicTypes` is enabled, the plugin intelligently chooses the most appropriate type:
+
+- **JsonObject** - For schemas with properties or additionalProperties
+- **JsonArray** - For schemas with items
+- **JsonElement** - For truly dynamic schemas with no hints
+
+### Working with JsonElement
+
+```kotlin
+val response = apiClient.getIdentity(id)
+val traits = response.traits  // JsonElement
+
+// Handle different JSON types
+when (traits) {
+    is JsonObject -> {
+        val email = traits["email"]?.jsonPrimitive?.content
+        val age = traits["age"]?.jsonPrimitive?.int
+    }
+    is JsonArray -> {
+        traits.forEach { element ->
+            println(element)
+        }
+    }
+    is JsonPrimitive -> {
+        val value = traits.content
+    }
+}
+
+// Convert to data class
+@Serializable
+data class UserTraits(val email: String, val age: Int)
+
+val userTraits = Json.decodeFromJsonElement<UserTraits>(traits)
 ```
 
 ## Using the Generated Code
@@ -191,12 +284,14 @@ We provide three example modules demonstrating different use cases:
 
 ```bash
 # Simple API example - great for getting started
+# Demonstrates dynamic types with 'Config' schema
 ./gradlew :example-simple-api:run
 
 # Classic Petstore example - well-known API with various features
 ./gradlew :example-petstore:run
 
 # Complex real-world example using Ory API
+# Shows dynamic type handling with 400+ models including 'identityTraits'
 ./gradlew :example-ory-client:run
 
 # Generate code for any example
@@ -204,6 +299,8 @@ We provide three example modules demonstrating different use cases:
 ./gradlew :example-petstore:generateOpenApiCode
 ./gradlew :example-ory-client:generateOpenApiCode
 ```
+
+**Note**: The Ory client example requires `useJsonElementForDynamicTypes = true` to handle schemas like `identityTraits` that have no type definition.
 
 ## Configuration Reference
 
@@ -219,6 +316,9 @@ openApiKotlin {
         generateDataAnnotations: Boolean   // Generate @Serializable (default: true)
         generateDefaultValues: Boolean     // Generate defaults (default: true)
         generateValidation: Boolean        // Generate validation (default: false)
+        useJsonElementForDynamicTypes: Boolean // Use JsonElement for untyped schemas (default: false)
+        dynamicTypeHandling: DynamicTypeHandling // ALLOW/WARN/FAIL (default: WARN)
+        schemaTypeOverrides: Map<String, String> // Custom type mappings (default: empty)
     }
     
     client {
@@ -268,9 +368,11 @@ openApiKotlin {
 
 ### Common Issues
 
-1. **Unresolved types**: Ensure all referenced schemas are defined in the OpenAPI spec
-2. **Reserved keywords**: The plugin automatically escapes Kotlin reserved words
-3. **Special characters**: Property names with special characters are sanitized
+1. **"Serializer has not been found for type 'Any'"**: Enable `useJsonElementForDynamicTypes` for schemas without type definitions
+2. **Unresolved types**: Ensure all referenced schemas are defined in the OpenAPI spec
+3. **Reserved keywords**: The plugin automatically escapes Kotlin reserved words
+4. **Special characters**: Property names with special characters are sanitized
+5. **Dynamic schemas**: Use `schemaTypeOverrides` for fine-grained control over specific schemas
 
 ### Gradle Tasks
 
