@@ -57,16 +57,34 @@ class KotlinPoetModelGenerator(
         }
         
         val models = mutableListOf<GeneratedFile>()
+        val processedSchemas = mutableSetOf<String>() // Track processed schemas
+        
+        // Group schemas by lowercase name to handle case conflicts
+        val schemaGroups = schemas.entries.groupBy { it.key.lowercase() }
         
         // Second pass: generate models
-        schemas.forEach { (name, schema) ->
-            // Skip generating for references
-            if (!schema.isReference()) {
-                models.add(generateModel(name, schema, packageName))
-                
-                // Also generate enums for properties with enum values
-                val nestedEnums = generateNestedEnums(name, schema, packageName)
-                models.addAll(nestedEnums)
+        schemaGroups.forEach { (_, group) ->
+            if (group.size == 1) {
+                // No conflict, generate normally
+                val (name, schema) = group.first()
+                if (!schema.isReference() && !processedSchemas.contains(name)) {
+                    processedSchemas.add(name)
+                    models.add(generateModel(name, schema, packageName))
+                    
+                    // Also generate enums for properties with enum values
+                    val nestedEnums = generateNestedEnums(name, schema, packageName)
+                    models.addAll(nestedEnums)
+                }
+            } else {
+                // Case conflict - generate a single file with multiple type aliases
+                val conflictingSchemas = group.filter { !it.value.isReference() }
+                if (conflictingSchemas.isNotEmpty()) {
+                    // Use the first schema's name for the file
+                    val primaryName = conflictingSchemas.first().key
+                    val file = generateConflictingTypeAliases(conflictingSchemas, packageName)
+                    models.add(file)
+                    conflictingSchemas.forEach { processedSchemas.add(it.key) }
+                }
             }
         }
         
@@ -504,5 +522,52 @@ class KotlinPoetModelGenerator(
             .replace("/*", "&#47;*") // Escape comment open
             .replace("[", "&#91;")   // Escape square brackets that might be interpreted as links
             .replace("]", "&#93;")
+    }
+    
+    /**
+     * Generates a single file containing multiple type aliases for case-conflicting schemas
+     */
+    private fun generateConflictingTypeAliases(
+        schemas: List<Map.Entry<String, Schema>>, 
+        packageName: String
+    ): GeneratedFile {
+        val fileName = schemas.first().key
+        val fileBuilder = FileSpec.builder(packageName, fileName)
+        
+        schemas.forEach { (name, schema) ->
+            // Only handle simple types as type aliases
+            val isSimpleType = schema.enum == null && 
+                              schema.properties == null && 
+                              schema.oneOf == null && 
+                              schema.anyOf == null
+            
+            if (isSimpleType) {
+                val kotlinType = when {
+                    schema.type == SchemaType.STRING && schema.format == "date-time" -> INSTANT
+                    schema.type == SchemaType.STRING && schema.format == "date" -> LOCAL_DATE
+                    schema.type == SchemaType.STRING -> STRING
+                    schema.type == SchemaType.INTEGER && schema.format == "int64" -> LONG
+                    schema.type == SchemaType.INTEGER -> INT
+                    schema.type == SchemaType.NUMBER && schema.format == "double" -> DOUBLE
+                    schema.type == SchemaType.NUMBER -> FLOAT
+                    schema.type == SchemaType.BOOLEAN -> BOOLEAN
+                    schema.type == SchemaType.ARRAY -> LIST.parameterizedBy(ANY)
+                    schema.type == SchemaType.OBJECT -> MAP.parameterizedBy(STRING, ANY)
+                    else -> ANY
+                }.copy(nullable = schema.nullable == true)
+                
+                fileBuilder.addTypeAlias(TypeAliasSpec.builder(name, kotlinType).build())
+            }
+        }
+        
+        // Add necessary imports
+        if (schemas.any { it.value.type == SchemaType.STRING && it.value.format == "date-time" } ||
+            schemas.any { it.value.type == SchemaType.STRING && it.value.format == "date" }) {
+            fileBuilder.addImport("kotlinx.datetime", "Instant", "LocalDate")
+        }
+        
+        val fileSpec = fileBuilder.build()
+        val relativePath = PackageName(packageName).toPath() + "/$fileName.kt"
+        return GeneratedFile(relativePath, fileSpec.toString())
     }
 }
