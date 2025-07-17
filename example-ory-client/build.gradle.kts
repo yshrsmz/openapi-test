@@ -47,6 +47,7 @@ openApiKotlin {
     models {
         generateDataAnnotations = true
         generateDefaultValues = true
+        useJsonElementForDynamicTypes = true
     }
     
     // Client generation options
