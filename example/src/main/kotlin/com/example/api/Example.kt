@@ -44,8 +44,11 @@ object Example {
             // OAuth2Client is a companion object, not a class
             // Use it to create an OAuth2-enabled HTTP client
             val oauth2HttpClient = OAuth2Client.create(
-                config = oauth2Config,
-                httpClient = httpClient,
+                tokenEndpoint = oauth2Config.tokenEndpoint,
+                clientId = oauth2Config.clientId,
+                clientSecret = oauth2Config.clientSecret,
+                redirectUri = oauth2Config.redirectUri,
+                baseUrl = "https://playground.projects.oryapis.com",
                 tokenManager = tokenManager
             )
             

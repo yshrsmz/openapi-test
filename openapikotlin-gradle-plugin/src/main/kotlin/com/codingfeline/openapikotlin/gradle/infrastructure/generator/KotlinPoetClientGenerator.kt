@@ -21,6 +21,9 @@ class KotlinPoetClientGenerator(
         private val KTOR_REQUEST = ClassName("io.ktor.client.request", "HttpRequestBuilder")
         private val KTOR_RESPONSE = ClassName("io.ktor.client.statement", "HttpResponse")
         private val JSON = ClassName("kotlinx.serialization.json", "Json")
+        private val OAuth2_CONFIG = ClassName("com.codingfeline.openapikotlin.runtime.auth", "OAuth2Config")
+        private val OAuth2_CLIENT = ClassName("com.codingfeline.openapikotlin.runtime.auth", "OAuth2Client")
+        private val TOKEN_MANAGER = ClassName("com.codingfeline.openapikotlin.runtime.auth", "TokenManager")
     }
     
     override fun generateModels(schemas: Map<String, Schema>, packageName: String): List<GeneratedFile> {
@@ -351,17 +354,29 @@ class KotlinPoetClientGenerator(
             )
             .addFunction(
                 FunSpec.builder("configureAuth")
-                    .addParameter("config", ClassName(packageName, "OAuth2Config"))
+                    .addParameter("config", OAuth2_CONFIG)
+                    .addParameter("tokenManager", TOKEN_MANAGER)
+                    .returns(KTOR_CLIENT)
                     .addCode("// Configure OAuth2 authentication\n")
-                    .addStatement("val oauth2Client = OAuth2Client(config, httpClient)")
-                    .addCode("// Additional auth configuration")
+                    .addStatement(
+                        "return %T.create(\n" +
+                        "    tokenEndpoint = config.tokenEndpoint,\n" +
+                        "    clientId = config.clientId,\n" +
+                        "    clientSecret = config.clientSecret,\n" +
+                        "    redirectUri = config.redirectUri,\n" +
+                        "    baseUrl = config.authorizationEndpoint,\n" +
+                        "    tokenManager = tokenManager\n" +
+                        ")",
+                        OAuth2_CLIENT
+                    )
                     .build()
             )
             .build()
         
         val fileSpec = FileSpec.builder(packageName, "AuthHelper")
             .addType(helperClass)
-            .addImport("com.codingfeline.openapikotlin.runtime.auth", "OAuth2Client")
+            .addImport("com.codingfeline.openapikotlin.runtime.auth", "OAuth2Client", "OAuth2Config", "TokenManager")
+            .addImport("io.ktor.client", "HttpClient")
             .build()
         
         val relativePath = PackageName(packageName).toPath() + "/AuthHelper.kt"
