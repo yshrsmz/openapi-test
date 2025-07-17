@@ -223,7 +223,7 @@ class KotlinPoetModelGenerator(
             .addAnnotation(Serializable::class)
             .apply {
                 if (schema.description != null) {
-                    addKdoc(schema.description)
+                    addKdoc(escapeKdoc(schema.description))
                 }
             }
         
@@ -249,7 +249,7 @@ class KotlinPoetModelGenerator(
             .addAnnotation(Serializable::class)
             .apply {
                 if (schema.description != null) {
-                    addKdoc(schema.description)
+                    addKdoc(escapeKdoc(schema.description))
                 }
             }
             .primaryConstructor(
@@ -303,7 +303,7 @@ class KotlinPoetModelGenerator(
             .addAnnotation(Serializable::class)
         
         if (schema.description != null) {
-            classBuilder.addKdoc(schema.description)
+            classBuilder.addKdoc(escapeKdoc(schema.description))
         }
         
         // Check if this class should implement a oneOf interface
@@ -367,7 +367,7 @@ class KotlinPoetModelGenerator(
                 .initializer(propertyName)
                 .apply {
                     if (propSchema.description != null) {
-                        addKdoc(propSchema.description)
+                        addKdoc(escapeKdoc(propSchema.description))
                     }
                     // Add override modifier if this property is defined in the interface
                     interfaceImplementations[name]?.let { interfaceName ->
@@ -500,5 +500,16 @@ class KotlinPoetModelGenerator(
             "" -> "property"
             else -> camelCase
         }
+    }
+    
+    /**
+     * Escapes special characters in KDoc comments to prevent syntax errors
+     */
+    private fun escapeKdoc(text: String): String {
+        return text
+            .replace("*/", "*&#47;") // Escape comment close
+            .replace("/*", "&#47;*") // Escape comment open
+            .replace("[", "&#91;")   // Escape square brackets that might be interpreted as links
+            .replace("]", "&#93;")
     }
 }
