@@ -1,6 +1,6 @@
 plugins {
     id("buildsrc.convention.kotlin-jvm")
-    id("org.jetbrains.kotlin.plugin.serialization") version "2.1.21"
+    alias(libs.plugins.kotlinx.serialization)
     `maven-publish`
 }
 

@@ -24,6 +24,10 @@
             <option value="$PROJECT_DIR$/example-ory-client" />
             <option value="$PROJECT_DIR$/example-petstore" />
             <option value="$PROJECT_DIR$/example-simple-api" />
+            <option value="$PROJECT_DIR$/openapi-gen" />
+            <option value="$PROJECT_DIR$/openapi-gen/ktor" />
+            <option value="$PROJECT_DIR$/openapi-gen/multiplatform" />
+            <option value="$PROJECT_DIR$/openapi-gen/retrofit" />
             <option value="$PROJECT_DIR$/openapikotlin-gradle-plugin" />
             <option value="$PROJECT_DIR$/openapikotlin-runtime" />
           </set>

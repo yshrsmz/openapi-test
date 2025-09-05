@@ -36,7 +36,7 @@ dependencies {
 
 gradlePlugin {
     plugins {
-        create("openApiKotlin") {
+        register("openApiKotlinGradlePlugin") {
             id = "com.codingfeline.openapi"
             implementationClass = "com.codingfeline.openapikotlin.gradle.OpenApiKotlinPlugin"
             displayName = "OpenAPI Kotlin Code Generator"

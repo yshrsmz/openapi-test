@@ -6,6 +6,13 @@
 // Configure plugin management
 pluginManagement {
     repositories {
+        google {
+            content {
+                includeGroupByRegex("com\\.android.*")
+                includeGroupByRegex("com\\.google.*")
+                includeGroupByRegex("androidx.*")
+            }
+        }
         mavenLocal()
         gradlePluginPortal()
         mavenCentral()
@@ -18,10 +25,13 @@ plugins {
 }
 
 dependencyResolutionManagement {
-    // Use Maven Central as the default repository (where Gradle will download dependencies) in all subprojects.
-    @Suppress("UnstableApiUsage")
+    repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
     repositories {
+        google()
         mavenCentral()
+        mavenLocal()
+//        maven { url = uri("https://central.sonatype.com/repository/maven-snapshots/") }
+//        maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots/")}
     }
 }
 
@@ -33,5 +43,10 @@ include(":openapikotlin-gradle-plugin")
 include(":example-simple-api")
 include(":example-petstore")
 include(":example-ory-client")
+
+include(":openapi-gen")
+include(":openapi-gen:multiplatform")
+include(":openapi-gen:ktor")
+include(":openapi-gen:retrofit")
 
 rootProject.name = "openapi-test"
